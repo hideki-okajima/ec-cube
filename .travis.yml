@@ -7,6 +7,9 @@ sudo: false
 
 language: php
 
+services:
+  - docker
+
 cache:
   directories:
     - vendor
@@ -21,7 +24,7 @@ php:
 
 env:
   matrix:
-    - DB=mysql ECCUBE_DB_USERNAME=root ECCUBE_DB_PASSWORD=
+    - DB=mysql ECCUBE_DB_USERNAME=root ECCUBE_DB_PASSWORD=password ECCUBE_DB_PORT=3307
     - DB=pgsql ECCUBE_DB_USERNAME=postgres ECCUBE_DB_PASSWORD=password
     - DB=sqlite
     # カバレッジレポート用
@@ -54,6 +57,7 @@ install:
 before_script:
   - phpenv config-rm xdebug.ini || true
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - if [ $DB == "mysql" ]; then docker run --name container_mysql -e MYSQL_ROOT_PASSWORD=password  -d -p 3307:3306 mysql:8 ; fi
   - composer install --dev --no-interaction -o
   - php ./eccube_install.php $DB none
   - mailcatcher
