@@ -1,9 +1,15 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: hideki_okajima
+ * Date: 2018/03/22
+ * Time: 5:41
+ */
 
 namespace Acme\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Eccube\Annotation as Eccube;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -12,16 +18,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 trait CustomerTrait
 {
     /**
-     * @ORM\Column(name="company_name_vn", type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\NotBlank(message="入力してくださいね！！！")
      * @Eccube\FormAppend(
      *     auto_render=true,
-     *     form_theme="Form/company_name_vn.twig",
-     *     type="\Symfony\Component\Form\Extension\Core\Type\TextareaType",
-     *     options={
-     *          "required": true,
-     *          "label": "会社名(VN)"
-     *     })
+     *     form_theme="Form/hobby.twig",
+     *     )
      */
-    public $company_name_vn;
+    public $hobby;
 }
