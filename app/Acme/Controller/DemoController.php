@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hideki_okajima
  * Date: 2018/03/22
- * Time: 5:31
+ * Time: 9:22
  */
 
 namespace Acme\Controller;
@@ -21,6 +21,6 @@ class DemoController
      */
     public function demo()
     {
-        return ["name" => "Demo"];
+        return [ "name" => "Demo" ];
     }
 }
