@@ -150,13 +150,13 @@ class DeliveryController extends AbstractController
         }
 
         // FormType: DeliveryTimeの生成
-        $DeliveryTimes = $Delivery->getDeliveryTimes();
-        $loop = 16 - count($DeliveryTimes);
-        for ($i = 1; $i <= $loop; $i++) {
-            $DeliveryTime = new DeliveryTime();
-            $DeliveryTime->setDelivery($Delivery);
-            $Delivery->addDeliveryTime($DeliveryTime);
-        }
+//        $DeliveryTimes = $Delivery->getDeliveryTimes();
+//        $loop = 16 - count($DeliveryTimes);
+//        for ($i = 1; $i <= $loop; $i++) {
+//            $DeliveryTime = new DeliveryTime();
+//            $DeliveryTime->setDelivery($Delivery);
+//            $Delivery->addDeliveryTime($DeliveryTime);
+//        }
 
         $builder = $this->formFactory
             ->createBuilder(DeliveryType::class, $Delivery);
@@ -192,12 +192,12 @@ class DeliveryController extends AbstractController
 
                 // 配送時間の登録
                 $DeliveryTimes = $form['delivery_times']->getData();
-                foreach ($DeliveryTimes as $DeliveryTime) {
-                    if (is_null($DeliveryTime->getDeliveryTime())) {
-                        $Delivery->removeDeliveryTime($DeliveryTime);
-                        $this->entityManager->remove($DeliveryTime);
-                    }
-                }
+//                foreach ($DeliveryTimes as $DeliveryTime) {
+//                    if (is_null($DeliveryTime->getDeliveryTime())) {
+//                        $Delivery->removeDeliveryTime($DeliveryTime);
+//                        $this->entityManager->remove($DeliveryTime);
+//                    }
+//                }
 
                 // お支払いの登録
                 $PaymentOptions = $this->paymentOptionRepository
