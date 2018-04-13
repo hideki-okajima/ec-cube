@@ -1,33 +1,17 @@
-<li id="delivery-time-prototype" class="list-group-item delivery-time-item sortable-item">
-    <div class="row justify-content-around">
+<li class="list-group-item delivery-time-item sortable-item" data-sort-no="{{ form.vars.name }}">
+    <div class="row justify-content-around mode-view">
         <div class="col-auto d-flex align-items-center">
             <i class="fa fa-bars text-ec-gray"></i>
         </div>
         <div class="col d-flex align-items-center">
-            <a>{% if form.vars.value == '' %}__value__{% else %}{{ form.vars.value }}{% endif %}</a>
-        </div>
-        {# TODO: 非表示の切り替え #}
-        <div class="col-7 d-flex align-items-center">
-            <div class="form-row">
-                {# TODO: フォームの調整 #}
-                {{ form_widget(form) }}
-                {#<div class="col-auto d-flex align-items-center">#}
-                    {#<input class="form-control" type="text" placeholder="配送方法名を入力">#}
-                {#</div>#}
-                <div class="col-auto d-flex align-items-center">
-                    <button class="btn btn-ec-conversion" type="submit">決定</button>
-                </div>
-                <div class="col-auto d-flex align-items-center">
-                    <button class="btn btn-ec-sub action-edit-cancel" type="submit">キャンセル</button>
-                </div>
-            </div>
+            <a class="display-label">{% if form.vars.value == '' %}__value__{% else %}{{ form.vars.value }}{% endif %}</a>
         </div>
         <div class="col-auto text-right">
-            <a class="btn btn-ec-actionIcon mr-3" href="" data-toggle="tooltip"
+            <a class="btn btn-ec-actionIcon mr-3 action-up" href="" data-toggle="tooltip"
                data-placement="top" title="上へ移動">
                 <i class="fa fa-arrow-up fa-lg text-secondary"></i>
             </a>
-            <a class="btn btn-ec-actionIcon mr-3" href="" data-toggle="tooltip"
+            <a class="btn btn-ec-actionIcon mr-3 action-down" href="" data-toggle="tooltip"
                data-placement="top" title="下へ移動">
                 <i class="fa fa-arrow-down fa-lg text-secondary"></i>
             </a>
@@ -39,6 +23,24 @@
                data-placement="top" title="削除">
                 <i class="fa fa-close fa-lg text-secondary"></i>
             </a>
+        </div>
+    </div>
+    {# TODO: 非表示の切り替え #}
+    <div class="row justify-content-around mode-edit d-none">
+        <div class="col-7 d-flex align-items-center">
+            <div class="form-row">
+                {# TODO: フォームの調整 #}
+                {{ form_widget(form, {'attr': {'data-origin-value': form.vars.value }}) }}
+                {#<div class="col-auto d-flex align-items-center">#}
+                {#<input class="form-control" type="text" placeholder="配送方法名を入力">#}
+                {#</div>#}
+                <div class="col-auto d-flex align-items-center">
+                    <button class="btn btn-ec-conversion action-edit-submit" type="submit">決定</button>
+                </div>
+                <div class="col-auto d-flex align-items-center">
+                    <button class="btn btn-ec-sub action-edit-cancel" type="submit">キャンセル</button>
+                </div>
+            </div>
         </div>
     </div>
 </li>
