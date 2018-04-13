@@ -24,6 +24,7 @@
 
 namespace Eccube\Controller\Admin\Setting\Shop;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Eccube\Annotation\Inject;
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Delivery;
@@ -36,6 +37,7 @@ use Eccube\Repository\DeliveryFeeRepository;
 use Eccube\Repository\DeliveryRepository;
 use Eccube\Repository\DeliveryTimeRepository;
 use Eccube\Repository\Master\PrefRepository;
+use Eccube\Repository\Master\SaleTypeRepository;
 use Eccube\Repository\PaymentOptionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -76,6 +78,11 @@ class DeliveryController extends AbstractController
     protected $deliveryTimeRepository;
 
     /**
+     * @var DeliveryTimeRepository
+     */
+    protected $saleTypeRepository;
+
+    /**
      * DeliveryController constructor.
      *
      * @param PaymentOptionRepository $paymentOptionRepository
@@ -83,13 +90,14 @@ class DeliveryController extends AbstractController
      * @param PrefRepository $prefRepository
      * @param DeliveryRepository $deliveryRepository
      */
-    public function __construct(PaymentOptionRepository $paymentOptionRepository, DeliveryFeeRepository $deliveryFeeRepository, PrefRepository $prefRepository, DeliveryRepository $deliveryRepository, DeliveryTimeRepository $deliveryTimeRepository)
+    public function __construct(PaymentOptionRepository $paymentOptionRepository, DeliveryFeeRepository $deliveryFeeRepository, PrefRepository $prefRepository, DeliveryRepository $deliveryRepository, DeliveryTimeRepository $deliveryTimeRepository, SaleTypeRepository $saleTypeRepository)
     {
         $this->paymentOptionRepository = $paymentOptionRepository;
         $this->deliveryFeeRepository = $deliveryFeeRepository;
         $this->prefRepository = $prefRepository;
         $this->deliveryRepository = $deliveryRepository;
         $this->deliveryTimeRepository = $deliveryTimeRepository;
+        $this->saleTypeRepository = $saleTypeRepository;
     }
 
 
@@ -120,12 +128,32 @@ class DeliveryController extends AbstractController
      * @Route("/%eccube_admin_route%/setting/shop/delivery/{id}/edit", requirements={"id" = "\d+"}, name="admin_setting_shop_delivery_edit")
      * @Template("@admin/Setting/Shop/delivery_edit.twig")
      */
-    public function edit(Request $request, Delivery $Delivery = null)
+    public function edit(Request $request, $id = null)
     {
-        if (is_null($Delivery)) {
-            // FIXME
-            $Delivery = $this->deliveryRepository
-                ->findOrCreate(0);
+
+        if (is_null($id)) {
+            $SaleType = $this->saleTypeRepository->findOneBy(array(), array('sort_no' => 'DESC'));
+
+            $Delivery = $this->deliveryRepository->findOneBy(array(), array('sort_no' => 'DESC'));
+
+            $sortNo = 1;
+            if ($Delivery) {
+                $sortNo = $Delivery->getSortNo() + 1;
+            }
+
+            $Delivery = new Delivery();
+            $Delivery
+                ->setSortNo($sortNo)
+                ->setVisible(true)
+                ->setSaleType($SaleType);
+        } else {
+            $Delivery = $this->deliveryRepository->find($id);
+        }
+
+        $originalDeliveryTimes = new ArrayCollection();
+
+        foreach ($Delivery->getDeliveryTimes() as $deliveryTime) {
+            $originalDeliveryTimes->add($deliveryTime);
         }
 
         // FormType: DeliveryFeeの生成
@@ -155,15 +183,6 @@ class DeliveryController extends AbstractController
         foreach ($DeliveryFeesIndex as $timeId => $DeliveryFee) {
             $Delivery->addDeliveryFee($DeliveryFee);
         }
-
-        // FormType: DeliveryTimeの生成
-        $DeliveryTimes = $Delivery->getDeliveryTimes();
-//        $loop = 16 - count($DeliveryTimes);
-//        for ($i = 1; $i <= $loop; $i++) {
-//            $DeliveryTime = new DeliveryTime();
-//            $DeliveryTime->setDelivery($Delivery);
-//            $Delivery->addDeliveryTime($DeliveryTime);
-//        }
 
         $builder = $this->formFactory
             ->createBuilder(DeliveryType::class, $Delivery);
@@ -198,19 +217,14 @@ class DeliveryController extends AbstractController
                 $DeliveryData = $form->getData();
 
                 // 配送時間の登録
-                foreach ($DeliveryTimes as $DeliveryTime) {
-//                    $Delivery->removeDeliveryTime($DeliveryTime);
-                    $this->entityManager->remove($DeliveryTime);
-                }
-
                 /** @var DeliveryTime $DeliveryTime */
-                foreach ($DeliveryData['DeliveryTimes'] as $DeliveryTime) {
-                    $deliveryTime = $DeliveryTime->getDeliveryTime();
-                    if (!empty($deliveryTime)) {
-//                        $Delivery->addDeliveryTime($deliveryTime);
-                        $DeliveryTime->setDelivery($Delivery);
-                        $this->entityManager->persist($DeliveryTime);
+                foreach ($originalDeliveryTimes as $DeliveryTime) {
+                    if (false === $Delivery->getDeliveryTimes()->contains($DeliveryTime)) {
+                        $this->entityManager->remove($DeliveryTime);
                     }
+                }
+                foreach ($DeliveryData['DeliveryTimes'] as $DeliveryTime) {
+                    $DeliveryTime->setDelivery($Delivery);
                 }
 
                 // お支払いの登録
