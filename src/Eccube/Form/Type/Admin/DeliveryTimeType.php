@@ -39,8 +39,11 @@ class DeliveryTimeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('delivery_time', HiddenType::class, array(
+            ->add('delivery_time', TextType::class, array(
                 'label' => false,
+                'attr' => array(
+                    'placeholder' => '配送方法名を入力',
+                ),
             ))
         ;
     }

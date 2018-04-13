@@ -34,6 +34,7 @@ use Eccube\Event\EventArgs;
 use Eccube\Form\Type\Admin\DeliveryType;
 use Eccube\Repository\DeliveryFeeRepository;
 use Eccube\Repository\DeliveryRepository;
+use Eccube\Repository\DeliveryTimeRepository;
 use Eccube\Repository\Master\PrefRepository;
 use Eccube\Repository\PaymentOptionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -70,6 +71,11 @@ class DeliveryController extends AbstractController
     protected $deliveryRepository;
 
     /**
+     * @var DeliveryTimeRepository
+     */
+    protected $deliveryTimeRepository;
+
+    /**
      * DeliveryController constructor.
      *
      * @param PaymentOptionRepository $paymentOptionRepository
@@ -77,12 +83,13 @@ class DeliveryController extends AbstractController
      * @param PrefRepository $prefRepository
      * @param DeliveryRepository $deliveryRepository
      */
-    public function __construct(PaymentOptionRepository $paymentOptionRepository, DeliveryFeeRepository $deliveryFeeRepository, PrefRepository $prefRepository, DeliveryRepository $deliveryRepository)
+    public function __construct(PaymentOptionRepository $paymentOptionRepository, DeliveryFeeRepository $deliveryFeeRepository, PrefRepository $prefRepository, DeliveryRepository $deliveryRepository, DeliveryTimeRepository $deliveryTimeRepository)
     {
         $this->paymentOptionRepository = $paymentOptionRepository;
         $this->deliveryFeeRepository = $deliveryFeeRepository;
         $this->prefRepository = $prefRepository;
         $this->deliveryRepository = $deliveryRepository;
+        $this->deliveryTimeRepository = $deliveryTimeRepository;
     }
 
 
@@ -150,7 +157,7 @@ class DeliveryController extends AbstractController
         }
 
         // FormType: DeliveryTimeの生成
-//        $DeliveryTimes = $Delivery->getDeliveryTimes();
+        $DeliveryTimes = $Delivery->getDeliveryTimes();
 //        $loop = 16 - count($DeliveryTimes);
 //        for ($i = 1; $i <= $loop; $i++) {
 //            $DeliveryTime = new DeliveryTime();
@@ -191,13 +198,20 @@ class DeliveryController extends AbstractController
                 $DeliveryData = $form->getData();
 
                 // 配送時間の登録
-                $DeliveryTimes = $form['delivery_times']->getData();
-//                foreach ($DeliveryTimes as $DeliveryTime) {
-//                    if (is_null($DeliveryTime->getDeliveryTime())) {
-//                        $Delivery->removeDeliveryTime($DeliveryTime);
-//                        $this->entityManager->remove($DeliveryTime);
-//                    }
-//                }
+                foreach ($DeliveryTimes as $DeliveryTime) {
+//                    $Delivery->removeDeliveryTime($DeliveryTime);
+                    $this->entityManager->remove($DeliveryTime);
+                }
+
+                /** @var DeliveryTime $DeliveryTime */
+                foreach ($DeliveryData['DeliveryTimes'] as $DeliveryTime) {
+                    $deliveryTime = $DeliveryTime->getDeliveryTime();
+                    if (!empty($deliveryTime)) {
+//                        $Delivery->addDeliveryTime($deliveryTime);
+                        $DeliveryTime->setDelivery($Delivery);
+                        $this->entityManager->persist($DeliveryTime);
+                    }
+                }
 
                 // お支払いの登録
                 $PaymentOptions = $this->paymentOptionRepository
