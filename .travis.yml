@@ -72,4 +72,5 @@ after_script:
 after_failure:
   # テストが落ちた = phpunitで見つかるエラーがある
   # PRの時のみreviewdogでレビューコメントを書き込む
+  - reviewdog -list
   - ./bin/phpunit --exclude-group cache-clear | reviewdog -f=phpunit -name="phpunit" -ci="travis"
