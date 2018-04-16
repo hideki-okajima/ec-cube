@@ -52,14 +52,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     <script>
         {# TODO: sort_noの実装#}
         // 並び替え後にsort noを更新
-        // function updateSortNo() {
-        //     var newSortNos = {};
-        //     var i = 0;
-        //     $('.sortable-item').each(function () {
-        //         newSortNos[this.dataset.id] = oldSortNos[i];
-        //         i++;
-        //     });
-        // }
+        function updateSortNo() {
+            var newSortNos = {};
+            var i = 0;
+            $('.sortable-item').each(function () {
+                newSortNos[this.dataset.id] = oldSortNos[i];
+                i++;
+            });
+        }
 
         // 最初と最後の↑↓を再描画
         function redrawDisableAllows() {
@@ -71,7 +71,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
         // 表示順の更新を行う
         function moveSortNo() {
-            // updateSortNo();
+            updateSortNo();
             redrawDisableAllows();
         }
 
