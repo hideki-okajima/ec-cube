@@ -102,7 +102,6 @@ class CustomerController extends AbstractController
      */
     public function index(Request $request, $page_no = null, Paginator $paginator)
     {
-        return (0);
         $pagination = array();
         $builder = $this->formFactory
             ->createBuilder(SearchCustomerType::class);
