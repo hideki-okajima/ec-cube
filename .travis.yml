@@ -19,7 +19,6 @@ php:
 #  - 7.0
 
 env:
-  - REVIEWDOG_VERSION=0.9.8
   matrix:
     - DB=mysql DATABASE_URL=mysql://root:@localhost/cube4_dev DATABASE_SERVER_VERSION=5
     - DB=pgsql DATABASE_URL=postgres://postgres:password@localhost/cube4_dev DATABASE_SERVER_VERSION=9
@@ -50,6 +49,9 @@ before_install:
   - echo "opcache.enable_cli=1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo "apc.enable_cli=1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  # reviewdogのバイナリを落としてパスを通す
+  - mkdir -p ~/bin/ && export export PATH="~/bin/:$PATH"
+  - curl -fSL https://github.com/haya14busa/reviewdog/releases/download/0.9.8/reviewdog_linux_amd64 -o ~/bin/reviewdog && chmod +x ~/bin/reviewdog
 
 install:
   - composer install --dev --no-interaction -o --apcu-autoloader
@@ -67,3 +69,7 @@ after_script:
   - if [ $COVERAGE ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover ; fi
   - if [ $COVERAGE ]; then php vendor/bin/php-coveralls -v -x coverage.clover ; fi
 
+after_failure:
+  # テストが落ちた = phpunitで見つかるエラーがある
+  # PRの時のみreviewdogでレビューコメントを書き込む
+  - test $TRAVIS_PULL_REQUEST && ./bin/phpunit --exclude-group cache-clear | reviewdog -f=phpunit -name="textlint" -ci="travis"
