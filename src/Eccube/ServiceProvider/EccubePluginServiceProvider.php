@@ -6,8 +6,6 @@ namespace Eccube\ServiceProvider;
 use Eccube\Plugin\ConfigManager as PluginConfigManager;
 use Eccube\Service\PluginService;
 use Pimple\Container;
-use Pimple\ServiceProviderInterface;
-use Silex\Api\BootableProviderInterface;
 use Silex\Application;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -16,7 +14,7 @@ use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 
-class EccubePluginServiceProvider implements ServiceProviderInterface, BootableProviderInterface
+class EccubePluginServiceProvider
 {
     /**
      * {@inheritDoc}

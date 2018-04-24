@@ -8,9 +8,8 @@ use Eccube\Service\PurchaseFlow\Processor\DisplayStatusValidator;
 use Eccube\Service\PurchaseFlow\Processor\StockValidator;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Pimple\Container;
-use Pimple\ServiceProviderInterface;
 
-class PaymentServiceProvider implements ServiceProviderInterface
+class PaymentServiceProvider
 {
     public function register(Container $app)
     {

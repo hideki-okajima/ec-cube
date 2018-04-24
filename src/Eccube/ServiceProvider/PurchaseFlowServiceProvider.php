@@ -11,9 +11,8 @@ use Eccube\Service\PurchaseFlow\Processor as Processor;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Pimple\Container;
-use Pimple\ServiceProviderInterface;
 
-class PurchaseFlowServiceProvider implements ServiceProviderInterface
+class PurchaseFlowServiceProvider
 {
     public function register(Container $app)
     {

@@ -25,12 +25,10 @@
 namespace Eccube\ServiceProvider;
 
 use Pimple\Container;
-use Pimple\ServiceProviderInterface;
-use Silex\Api\BootableProviderInterface;
 use Silex\Application;
 
 
-class InstallServiceProvider  implements ServiceProviderInterface, BootableProviderInterface
+class InstallServiceProvider
 {
     /**
      * Registers services on the given app.
