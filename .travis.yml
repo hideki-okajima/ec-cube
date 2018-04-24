@@ -66,6 +66,7 @@ jobs:
       script: ./codeception.sh -g ${GROUP}
     - stage: Static Analysis
       before_install: skip
-      install: skip
+      install:
+        - composer install --dev --no-interaction
       script:
         - vendor/bin/phpstan analyse src/Eccube -l 0 --no-interaction --no-progress
