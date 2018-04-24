@@ -69,4 +69,4 @@ jobs:
       install:
         - composer install --dev --no-interaction
       script:
-        - vendor/bin/phpstan analyse src/Eccube -l 0 --no-interaction --no-progress
+        - vendor/bin/phpstan analyse -c phpstan.neon src/Eccube -l 0 --no-interaction --no-progress
