@@ -107,6 +107,7 @@
         "fzaninotto/faker": "^1.7",
         "mikey179/vfsStream": "^1.6",
         "php-coveralls/php-coveralls": "^2.0",
+        "phpstan/phpstan": "^0.9.2",
         "symfony/browser-kit": "^3.4",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^3.4",
