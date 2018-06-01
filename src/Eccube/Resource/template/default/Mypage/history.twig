@@ -31,7 +31,7 @@ file that was distributed with this source code.
     <div class="ec-layoutRole__main">
         <div class="ec-mypageRole">
             <div class="ec-pageHeader">
-                <h1>{{'mypage.label.my_account'|trans}}/{{'mypage.label.order_history'|trans}}</h1>
+                <h1>{{ 'mypage.label.my_account'|trans }}/{{ 'mypage.label.order_history'|trans }}</h1>
             </div>
             {% include 'Mypage/navi.twig' %}
         </div>
@@ -42,16 +42,16 @@ file that was distributed with this source code.
             <div class="ec-orderRole__detail">
                 <div class="ec-orderOrder">
                     <div class="ec-definitions">
-                        <dt>{{'admin.customer.edit.100'|trans}}</dt>
+                        <dt>{{ 'admin.customer.edit.100'|trans }}</dt>
                         <dd>{{ Order.create_date|date("Y/m/d H:i:s") }}</dd>
                     </div>
                     <div class="ec-definitions">
-                        <dt>{{ 'mypage.history.label.order_code'|trans}}</dt>
+                        <dt>{{ 'mypage.history.label.order_code'|trans }}</dt>
                         <dd>{{ Order.order_code }}</dd>
                     </div>
                     {% if BaseInfo.option_mypage_order_status_display %}
                         <div class="ec-definitions">
-                            <dt>{{  'mypage.history.label.order_status'|trans}}</dt>
+                            <dt>{{ 'mypage.history.label.order_status'|trans }}</dt>
                             <dd>{{ Order.CustomerOrderStatus }}</dd>
                         </div>
                     {% endif %}
@@ -65,22 +65,25 @@ file that was distributed with this source code.
                             <dd>{{ Order.addPoint }}pt</dd>
                         </div>
                     {% endif %}
-
                 </div>
                 <div class="ec-orderDelivery">
                     <div class="ec-rectHeading">
-                        <h2>{{'mypage.history.detail.title.delivery'|trans}}</h2>
+                        <h2>{{ 'mypage.history.detail.title.delivery'|trans }}</h2>
                     </div>
                     {% for Shipping in Order.Shippings %}
-                        <div class="ec-orderDelivery__title">{{'mypage.history.detail.label.shipping'|trans}}{% if Order.multiple %}({{ loop.index }}){% endif %}</div>
+                        <div class="ec-orderDelivery__title">
+                            {{ 'mypage.history.detail.label.shipping'|trans }}
+                            {% if Order.multiple %}({{ loop.index }}){% endif %}
+                        </div>
                         {% for orderItem in Shipping.productOrderItems %}
                             <div class="ec-orderDelivery__item">
                                 <div class="ec-imageGrid">
                                     <div class="ec-imageGrid__img">
                                         {% if orderItem.product is null %}
-                                            <img src="{{ asset(''|no_image_product, 'save_image') }}" />
+                                            <img src="{{ asset(''|no_image_product, 'save_image') }}"/>
                                         {% else %}
-                                            <img src="{{ asset(orderItem.Product.MainListImage|no_image_product, 'save_image') }}" alt="{{ orderItem.productName }}" />
+                                            <img src="{{ asset(orderItem.Product.MainListImage|no_image_product, 'save_image') }}"
+                                                 alt="{{ orderItem.productName }}"/>
                                         {% endif %}
                                     </div>
                                     <div class="ec-imageGrid__content">
@@ -93,82 +96,89 @@ file that was distributed with this source code.
                                                 <br>{{ orderItem.productClass.classCategory2.className.name }}：{{ orderItem.productClass.classCategory2 }}
                                             {% endif %}
                                         {% endif %}
-                                        <p>{{ orderItem.price_inc_tax|price }} × {{ orderItem.quantity|number_format }}</p>
+                                        <p>{{ orderItem.price_inc_tax|price }}
+                                            × {{ orderItem.quantity|number_format }}</p>
                                         {% if orderItem.product and orderItem.price_inc_tax != orderItem.productClass.price02IncTax %}
-                                            <p class="ec-color-accent">【現在価格】{{ orderItem.productClass.price02IncTax|price }}</p>
+                                            <p class="ec-color-accent">
+                                                【現在価格】{{ orderItem.productClass.price02IncTax|price }}</p>
                                             {% set remessage = true %}
                                         {% endif %}
-
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
                         <div class="ec-orderDelivery__address">
-                            <p>{{ Shipping.name01 }}&nbsp;{{ Shipping.name02 }}&nbsp;
-                                ({{ Shipping.kana01 }}&nbsp;{{ Shipping.kana02 }})</p>
-                            <p>〒{{ Shipping.zip01 }}-{{ Shipping.zip02 }}　{{ Shipping.Pref }}{{ Shipping.addr01 }}{{ Shipping.addr02 }}</p>
+                            <p>{{ Shipping.name01 }}&nbsp;{{ Shipping.name02 }}&nbsp;({{ Shipping.kana01 }}
+                                &nbsp;{{ Shipping.kana02 }})</p>
+                            <p>〒{{ Shipping.zip01 }}-{{ Shipping.zip02 }}
+                                　{{ Shipping.Pref }}{{ Shipping.addr01 }}{{ Shipping.addr02 }}</p>
                             <p>{{ Shipping.tel01 }}-{{ Shipping.tel02 }}-{{ Shipping.tel03 }}</p>
                         </div>
                         <div class="ec-definitions--soft">
-                            <dt>{{'mypage.history.detail.label.shipping_method'|trans}}</dt>
+                            <dt>{{ 'mypage.history.detail.label.shipping_method'|trans }}</dt>
                             <dd>{{ Shipping.shipping_delivery_name }}{{ Shipping.shipping_delivery_fee ? '（＋' ~ Shipping.shipping_delivery_fee|price ~ '）' : '' }}</dd>
                         </div>
                         <div class="ec-definitions--soft">
-                            <dt>{{'mypage.history.detail.label.shipping_date'|trans}} : </dt>
+                            <dt>{{ 'mypage.history.detail.label.shipping_date'|trans }} :</dt>
                             <dd>{{ Shipping.shipping_delivery_date|date_format|default('admin.shipping.edit.719'|trans) }}</dd>
                         </div>
                         <div class="ec-definitions--soft">
-                            <dt>{{'mypage.history.detail.label.shipping_time'|trans}} : </dt>
+                            <dt>{{ 'mypage.history.detail.label.shipping_time'|trans }} :</dt>
                             <dd>{{ Shipping.shipping_delivery_time|default('admin.shipping.edit.719'|trans) }}</dd>
                         </div>
                     {% endfor %}
                 </div>
-                    <div class="ec-orderPayment">
-                        <div class="ec-rectHeading">
-                            <h2>{{'mypage.history.detail.title.payment'|trans}}</h2>
-                        </div>
-                        <p>{{'admin.setting.shop.payment.597'|trans}} : {{ Order.PaymentMethod }}</p>
+                <div class="ec-orderPayment">
+                    <div class="ec-rectHeading">
+                        <h2>{{ 'mypage.history.detail.title.payment'|trans }}</h2>
                     </div>
-                    <div class="ec-orderConfirm">
-                        <div class="ec-rectHeading">
-                            <h2>{{'shopping.label.inquiry_comment'|trans}}</h2>
-                        </div>
-                        <p>{{ Order.message|default('')|nl2br }}</p>
+                    <p>{{ 'admin.setting.shop.payment.597'|trans }} : {{ Order.PaymentMethod }}</p>
+                </div>
+                <div class="ec-orderConfirm">
+                    <div class="ec-rectHeading">
+                        <h2>{{ 'shopping.label.inquiry_comment'|trans }}</h2>
                     </div>
-                    <div class="ec-orderMails">
-                        <div class="ec-rectHeading">
-                            <h2>{{'mypage.history.detail.title.mail'|trans}}</h2>
-                        </div>
-                        {% for MailHistory in Order.MailHistories %}
-                            <div class="ec-orderMail">
-                                <div class="ec-orderMail__time">{{ MailHistory.send_date|date("Y/m/d H:i:s") }}</div>
-                                <div class="ec-orderMail__link"><a>{{ MailHistory.mail_subject }}</a></div>
-                                <pre class="ec-orderMail__body" style="display: none;">
+                    <p>{{ Order.message|default('')|nl2br }}</p>
+                </div>
+                <div class="ec-orderMails">
+                    <div class="ec-rectHeading">
+                        <h2>{{ 'mypage.history.detail.title.mail'|trans }}</h2>
+                    </div>
+                    {% for MailHistory in Order.MailHistories %}
+                        <div class="ec-orderMail">
+                            <div class="ec-orderMail__time">{{ MailHistory.send_date|date("Y/m/d H:i:s") }}</div>
+                            <div class="ec-orderMail__link"><a>{{ MailHistory.mail_subject }}</a></div>
+                            <pre class="ec-orderMail__body" style="display: none;">
                                     {{ MailHistory.mail_body|nl2br }}
-                                    <p class="ec-orderMail__close"><a>{{'common.label.close'|trans}}</a></p></pre>
-                            </div>
-                        {% else %}
-                            <p class="ec-reportDescription">メール履歴がありません。</p>
-                        {% endfor %}
-                        <a href="{{ url('mypage') }}" class="ec-inlineBtn">{{'common.label.btn.go_back'|trans}}</a>
-                    </div>
+                                <p class="ec-orderMail__close"><a>{{ 'common.label.close'|trans }}</a></p></pre>
+                        </div>
+                    {% else %}
+                        <p class="ec-reportDescription">メール履歴がありません。</p>
+                    {% endfor %}
+                    <a href="{{ url('mypage') }}" class="ec-inlineBtn">{{ 'common.label.btn.go_back'|trans }}</a>
+                </div>
             </div>
             <div class="ec-orderRole__summary">
                 <div class="ec-totalBox">
                     <dl class="ec-totalBox__spec">
-                        <dt>{{'shopping.label.subtotal'|trans}}</dt>
+                        <dt>{{ 'shopping.label.subtotal'|trans }}</dt>
                         <dd>{{ Order.subtotal|price }}</dd>
                     </dl>
                     <dl class="ec-totalBox__spec">
-                        <dt>{{'shopping.label.charges'|trans}}</dt>
+                        <dt>{{ 'shopping.label.charges'|trans }}</dt>
                         <dd>{{ Order.charge|price }}</dd>
                     </dl>
                     <dl class="ec-totalBox__spec">
-                        <dt>{{'shopping.label.shipping_charge'|trans}}</dt>
+                        <dt>{{ 'shopping.label.shipping_charge'|trans }}</dt>
                         <dd>{{ Order.delivery_fee_total|price }}</dd>
                     </dl>
-                    <div class="ec-totalBox__total">{{'common.label.cart_total'|trans}}<span class="ec-totalBox__price">{{ Order.payment_total|price }}</span><span class="ec-totalBox__taxLabel">{{'shopping.label.tax_incl'|trans}}</span></div>
-                    <a href="{{ url('mypage_order', {'id': Order.id }) }}" class="ec-blockBtn--action" {{ csrf_token_for_anchor() }} data-method="put" data-confirm="false">{{'mypage.history.detail.re_order'|trans}}</a>
+                    <div class="ec-totalBox__total">{{ 'common.label.cart_total'|trans }}
+                        <span class="ec-totalBox__price">{{ Order.payment_total|price }}</span>
+                        <span class="ec-totalBox__taxLabel">{{ 'shopping.label.tax_incl'|trans }}</span>
+                    </div>
+                    <a href="{{ url('mypage_order', {'id': Order.id }) }}"
+                       class="ec-blockBtn--action" {{ csrf_token_for_anchor() }} data-method="put"
+                       data-confirm="false">{{ 'mypage.history.detail.re_order'|trans }}</a>
 
                 </div>
                 {% if remessage %}
