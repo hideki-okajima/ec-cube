@@ -334,6 +334,9 @@ class CartService
         foreach ($allCartItems as $index => $itemInCart) {
             if ($this->cartItemComparator->compare($itemInCart, $removeItem)) {
                 $foundIndex = $index;
+                $this->entityManager->remove($itemInCart);
+                $this->entityManager->flush($itemInCart);
+                $this->entityManager->clear();
                 break;
             }
         }
