@@ -19,7 +19,22 @@
 
 ## インストール
 
-### [EC-CUBE 3.xのインストール方法](http://ec-cube.github.io/quickstart_install)
+### [EC-CUBE 3.xのインストール方法](http://doc3n.ec-cube.net/quickstart_install)
+
+#### 手動でのインストール手順
+
+1. リポジトリをclone
+```git clone https://github.com/EC-CUBE/ec-cube.git```
+1. ディレクトリを移動
+```cd ec-cube```
+1. `experimental/sf` のブランチをチェックアウト
+```git checkout experimental/sf```
+1. ec-cubeのインストールコマンドを実行。色々聞かれますが、そのままエンターでOK。
+```bin/console eccube:install```
+1. サーバの起動
+```bin/console server:run```
+1. ブラウザでアクセス
+http://127.0.0.1:8000/
 
 ### CSS の編集方法
 
@@ -43,7 +58,7 @@ npm run build # Sass のビルド
 
 ## ドキュメント
 
-### [EC-CUBE 3.x 開発ドキュメント@ec-cube.github.io](http://ec-cube.github.io/)
+### [EC-CUBE 3.x 開発ドキュメント@ec-cube.github.io](http://doc3n.ec-cube.net/)
 
 
 EC-CUBE 3.x の仕様や手順、開発Tipsに関するドキュメントを掲載しています。  
