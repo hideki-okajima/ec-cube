@@ -16,6 +16,7 @@ use Plugin\LinkPayment\Service\CreditCard;
 use Plugin\LinkPayment\Service\PaymentService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+// TODO docコメントを充実させる
 class PluginManager extends AbstractPluginManager
 {
     public function enable($config, $app, ContainerInterface $container)
