@@ -13,11 +13,21 @@
 
 namespace Eccube\Service\Payment;
 
+use Eccube\Entity\Order;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * PaymentMethod
+ *
+ * 必要に応じて決済手段ごとに実装する
+ */
 interface PaymentMethod
 {
+    /**
+     * @return PaymentResult
+     */
+    public function verify();
+
     /**
      * @return PaymentResult
      */
@@ -34,7 +44,7 @@ interface PaymentMethod
     public function setFormType(FormInterface $form);
 
     /**
-     * @param Request $request
+     * @param Order
      */
-    public function setRequest(Request $request);
+    public function setOrder(Order $Order);
 }
