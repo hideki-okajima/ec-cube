@@ -31,7 +31,6 @@ class PaymentController extends AbstractController
 
     /**
      * @Route("/sample_payment_complete", name="sample_payment_complete")
-     * @Method("POST")
      */
     public function complete()
     {

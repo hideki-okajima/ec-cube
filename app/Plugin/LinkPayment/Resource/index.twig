@@ -8,7 +8,8 @@
 
 <body>
 <p>受注番号：{{ order_code }}</p>
-<form method="post" action="{{ url('sample_payment_complete') }}">
+<form method="post" action="{{ url('payment_company') }}">
+    <input type="hidden" name="code" value="{{ order_code }}">
     <h3>クレジットカード情報入力</h3>
     <div>
         <p>カード情報を入力してください。</p>
