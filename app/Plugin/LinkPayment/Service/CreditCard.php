@@ -10,7 +10,9 @@ namespace Plugin\LinkPayment\Service;
 
 
 use Eccube\Entity\Order;
+use Eccube\Service\Payment\PaymentDispatcher;
 use Eccube\Service\Payment\PaymentMethod;
+use Eccube\Service\Payment\PaymentResult;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,10 +27,10 @@ class CreditCard implements PaymentMethod
 
     public function checkout()
     {
-        // リンク型は使用しない
+        return new PaymentResult();
     }
 
-    // TODO Interfaceに追加と呼び出し元の処理が必要
+    // TODO 呼び出し元の処理が必要
     public function verify()
     {
         // リンク型は使用しない
@@ -36,23 +38,23 @@ class CreditCard implements PaymentMethod
 
     /**
      * ここでは決済方法の独自処理を記載する
+     * forward先を指定してそちらから決済画面へリダイレクトさせる
      *
      * 決済会社の画面へリダイレクト
      *
-     * @return RedirectResponse
+     * @return PaymentDispatcher
      */
     public function apply()
     {
         // 決済の独自処理
+        // こちらに書いてもいいし、forward先で書いてもいい
 
-        // 決済会社の決済画面へのリンク
-        $url = '/payment_company';
+        // 他のコントローラに移譲等の処理をする
+        $dispatcher = new PaymentDispatcher();
+        $dispatcher->setForward(true);
+        $dispatcher->setRoute('sample_payment_index');
 
-        // 注文番号を付与
-        $orderCode = $this->Order->getOrderCode();
-        $url .= '?code=' . $orderCode;
-
-        return new RedirectResponse($url);
+        return $dispatcher;
     }
 
     /**
@@ -62,6 +64,7 @@ class CreditCard implements PaymentMethod
      */
     public function setFormType(FormInterface $form)
     {
+        // TODO setOrder()でセットするので不要になる予定
         $this->Order = $form->getData();
 
         // TODO Orderエンティティにトークンが保持されているのでフォームは不要
@@ -86,5 +89,13 @@ class CreditCard implements PaymentMethod
     public function receive()
     {
 
+    }
+
+    /**
+     * @param Order
+     */
+    public function setOrder(Order $Order)
+    {
+        $this->Order = $Order;
     }
 }
