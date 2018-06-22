@@ -12,6 +12,7 @@ namespace Plugin\LinkPayment\Controller;
 use Eccube\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
 
 class PaymentCompanyController extends AbstractController
 {
@@ -19,8 +20,12 @@ class PaymentCompanyController extends AbstractController
      * @Route("/payment_company", name="payment_company")
      * @Template("LinkPayment/Resource/index.twig")
      */
-    public function index()
+    public function index(Request $request)
     {
-        return [];
+        $OrderCode = $request->get('code');
+
+        return [
+            'order_code' => $OrderCode,
+        ];
     }
 }
