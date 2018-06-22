@@ -949,9 +949,13 @@ class ShoppingController extends AbstractShoppingController
     private function createPaymentMethod(Order $Order, $form)
     {
         $methodClass = $Order->getPayment()->getMethodClass();
-        $PaymentMethod = new $methodClass(); // コンテナから取得したい
-        $PaymentMethod->setOrder($Order);
+        // TODO Plugin/Xxx/Resouce/config/services.yamlでpublicにする必要がある
+        // なぜかinjectionできない
+//        $PaymentMethod = $this->container->get($methodClass);
+        $PaymentMethod = new $methodClass($this->shoppingService, $this->entityManager); // コンテナから取得したい
         $PaymentMethod->setFormType($form);
+        // TODO コンテナから取得できるなら以下は不要
+//        $PaymentMethod->setRequest($this->container->get('request_stack')->getCurrentRequest());
 
         return $PaymentMethod;
     }

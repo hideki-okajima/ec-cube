@@ -10,8 +10,11 @@ namespace Plugin\LinkPayment\Controller;
 
 use Eccube\Annotation\ForwardOnly;
 use Eccube\Controller\AbstractController;
+use Eccube\Entity\Master\OrderStatus;
+use Eccube\Entity\Order;
 use Eccube\Repository\OrderRepository;
 use Eccube\Service\ShoppingService;
+use Plugin\LinkPayment\Entity\PaymentStatus;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -48,11 +51,35 @@ class PaymentController extends AbstractController
      */
     public function index()
     {
+//        /** @var Order $Order */
+        $Order = $this->shoppingService->getOrder();
+//
+//        if (!$Order) {
+//            // TODO エラー処理
+//        }
+//
+//        dump($Order);
+//        // TODO 決済会社の共通処理はPaymentServiceのdispatchで処理すべきなので移植が必要
+//        // - 受注ステータスの変更（購入処理中 -> 決済処理中）
+//        $this->shoppingService->setOrderStatus($Order, OrderStatus::PENDING);
+//dump($Order);
+//
+//        // - 決済ステータス（なし -> 未決済）
+//        // TODO DBにレコードを追加する必要がある
+//        if ($Order->getLinkPaymentPaymentStatus() == null) {
+//            $PaymentStatus = $this->entityManager->find(PaymentStatus::class, PaymentStatus::OUTSTANDING);
+//            $Order->setLinkPaymentPaymentStatus($PaymentStatus);
+//        }
+//
+//        // TODO ここでflushはさせたくない
+//        $this->entityManager->persist($Order);
+//        $this->entityManager->flush($Order);
+//        dump($Order);exit;
+
         // 決済会社の決済画面へのリンク
         $url = '/payment_company';
 
         // 注文番号を付与
-        $Order = $this->shoppingService->getOrder();
         $orderCode = $Order->getOrderCode();
         $url .= '?code=' . $orderCode;
 

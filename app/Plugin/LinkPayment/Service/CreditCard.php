@@ -9,13 +9,16 @@
 namespace Plugin\LinkPayment\Service;
 
 
+use Doctrine\ORM\EntityManagerInterface;
+use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
 use Eccube\Service\Payment\PaymentDispatcher;
 use Eccube\Service\Payment\PaymentMethod;
 use Eccube\Service\Payment\PaymentResult;
+use Eccube\Service\ShoppingService;
+use Plugin\LinkPayment\Entity\PaymentStatus;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class CreditCard implements PaymentMethod
@@ -24,6 +27,22 @@ class CreditCard implements PaymentMethod
      * @var Order
      */
     private $Order;
+
+    /**
+     * @var ShoppingService
+     */
+    private $shoppingService;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    public function __construct(ShoppingService $shoppingService, EntityManagerInterface $entityManager)
+    {
+        $this->shoppingService = $shoppingService;
+        $this->entityManager = $entityManager;
+    }
 
     public function checkout()
     {
@@ -48,6 +67,32 @@ class CreditCard implements PaymentMethod
     {
         // 決済の独自処理
         // こちらに書いてもいいし、forward先で書いてもいい
+        /** @var Order $Order */
+        $Order = $this->shoppingService->getOrder();
+
+        if (!$Order) {
+            // TODO エラー処理
+        }
+
+        dump($Order);
+        // TODO 決済会社の共通処理はPaymentServiceのdispatchで処理すべきなので移植が必要
+        // - 受注ステータスの変更（購入処理中 -> 決済処理中）
+        $this->shoppingService->setOrderStatus($Order, OrderStatus::PENDING);
+        dump($Order);
+
+        // - 決済ステータス（なし -> 未決済）
+        // TODO DBにレコードを追加する必要がある
+        if ($Order->getLinkPaymentPaymentStatus() == null) {
+            $PaymentStatus = $this->entityManager->find(PaymentStatus::class, PaymentStatus::OUTSTANDING);
+            $Order->setLinkPaymentPaymentStatus($PaymentStatus);
+        }
+
+        // TODO ここでflushはさせたくない
+        // TODO なぜか保存できない
+        $this->entityManager->persist($Order);
+        $this->entityManager->flush($Order);
+        dump($Order);
+
 
         // 他のコントローラに移譲等の処理をする
         $dispatcher = new PaymentDispatcher();

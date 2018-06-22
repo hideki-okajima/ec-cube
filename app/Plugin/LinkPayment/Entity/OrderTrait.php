@@ -29,6 +29,7 @@ trait OrderTrait
      */
     private $link_payment_token;
 
+    // TODO カラム名、変数名が不適切
     /**
      * 決済ステータスを保持するカラム.
      *
