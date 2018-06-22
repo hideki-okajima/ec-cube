@@ -33,12 +33,15 @@ class PaymentService
      */
     public function dispatch(PaymentMethod $PaymentMethod)
     {
+        // ここでは決済会社の共通処理を記載する
+
         // TODO 以下の更新処理の追加
+        // 以下は共通処理
         // - 受注ステータスの変更（購入処理中 -> 決済処理中）
         // - 決済ステータス（なし -> 未決済）
         // - 在庫を減らす
         // - ポイントを減らす
-        // 注文番号を送信する
+
         return new RedirectResponse('/payment_company');
     }
 }

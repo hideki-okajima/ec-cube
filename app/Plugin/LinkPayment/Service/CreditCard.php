@@ -16,12 +16,24 @@ class CreditCard implements PaymentMethod
 
     public function checkout()
     {
-        // TODO: Implement checkout() method.
+        // リンク型は使用しない
+    }
+
+    // TODO Interfaceに追加と呼び出し元の処理が必要
+    public function verify()
+    {
+        // リンク型は使用しない
     }
 
     public function apply()
     {
-        // TODO: Implement apply() method.
+        // ここでは決済方法の独自処理を記載する
+
+        // TODO 以下の処理を追加
+        // 決済の独自処理
+        // 注文番号を送信する
+
+        return new RedirectResponse('/payment_company');
     }
 
     public function setFormType($form)
@@ -34,8 +46,15 @@ class CreditCard implements PaymentMethod
 
     }
 
+    // TODO 消す
     public function setApplication($app)
     {
-        // TODO: Implement setApplication() method.
+        //
+    }
+
+    // TODO Interfaceに追加と呼び出し元の処理が必要
+    public function receive()
+    {
+
     }
 }

@@ -46,12 +46,15 @@ class PaymentController extends AbstractController
     public function receiveComplete()
     {
         // TODO 以下の処理を追加
+        // 独自処理
         // 完了通知リクエストのパラメータの正当性チェック（EC-CUBEの注文番号、）
-        // 完了メール送信
         // 受注ステータス更新（決済処理中 -> 新規受付）
         // 決済ステータス更新（未決済 -> 仮売上済み）
-        // 残っていればカート削除
         // 決済会社に結果を返す（200 or それ以外）
+
+        // 共通処理
+        // 完了メール送信
+        // 残っていればカート削除
         return new Response("OK!!");
     }
 }
