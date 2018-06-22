@@ -18,15 +18,17 @@ use Symfony\Component\HttpFoundation\Request;
 class PaymentCompanyController extends AbstractController
 {
     /**
+     * 決済会社側での処理
+     *
      * @Route("/payment_company", name="payment_company")
-     * @Template("LinkPayment/Resource/index.twig")
+     * @Template("LinkPayment/Resource/dummy.twig")
      */
     public function index(Request $request)
     {
         $orderCode = $request->get('code');
 
         if ('POST' === $request->getMethod()) {
-            // EC-CUBEの購入完了画面へのリンク
+            // EC-CUBEの決済完了受付リンク
             $url = '/sample_payment_complete';
 
             // 注文番号を付与

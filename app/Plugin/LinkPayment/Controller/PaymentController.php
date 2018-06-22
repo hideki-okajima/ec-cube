@@ -12,13 +12,13 @@ namespace Plugin\LinkPayment\Controller;
 use Eccube\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class PaymentController extends AbstractController
 {
     /**
      * @Route("/sample_payment_back", name="sample_payment_back")
-     * @Method("POST")
      */
     public function back()
     {
@@ -32,9 +32,14 @@ class PaymentController extends AbstractController
     /**
      * @Route("/sample_payment_complete", name="sample_payment_complete")
      */
-    public function complete()
+    public function complete(Request $request)
     {
-        // カード情報を保存するなどあればここで
+        $orderCode = $request->get('code');
+
+        // カード情報を保存するなどあればここに処理を追加
+
+
+        // TODO 受注番号を完了画面に送って画面に表示させたい
         return $this->redirectToRoute("shopping_complete");
     }
 
