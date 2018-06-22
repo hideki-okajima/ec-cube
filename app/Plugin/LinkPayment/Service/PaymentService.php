@@ -11,30 +11,18 @@ namespace Plugin\LinkPayment\Service;
 
 use Eccube\Service\Payment\PaymentMethod;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Eccube\Service\PaymentService as BasePaymentService;
 
-class PaymentService
+class PaymentService extends BasePaymentService
 {
     /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    public function __construct(RequestStack $requestStack)
-    {
-        $this->requestStack = $requestStack;
-    }
-
-    /**
-     * 決済会社の画面へリダイレクト
+     * ここでは決済会社の共通処理を記載する
      *
-     * @param PaymentMethod $PaymentMethod
+     * @param PaymentMethod $method
      * @return RedirectResponse
      */
-    public function dispatch(PaymentMethod $PaymentMethod)
+    public function dispatch(PaymentMethod $method)
     {
-        // ここでは決済会社の共通処理を記載する
-
         // TODO 以下の更新処理の追加
         // 以下は共通処理
         // - 受注ステータスの変更（購入処理中 -> 決済処理中）
@@ -42,6 +30,10 @@ class PaymentService
         // - 在庫を減らす
         // - ポイントを減らす
 
-        return new RedirectResponse('/payment_company');
+        // PaymentMethod->apply に処理を移譲する
+        // 別のコントローラに forward など
+        $request = $this->requestStack->getCurrentRequest();
+
+        return $method->apply($request);
     }
 }

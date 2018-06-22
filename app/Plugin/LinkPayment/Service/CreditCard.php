@@ -10,6 +10,7 @@ namespace Plugin\LinkPayment\Service;
 
 
 use Eccube\Service\Payment\PaymentMethod;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class CreditCard implements PaymentMethod
 {
@@ -25,10 +26,15 @@ class CreditCard implements PaymentMethod
         // リンク型は使用しない
     }
 
+    /**
+     * ここでは決済方法の独自処理を記載する
+     *
+     * 決済会社の画面へリダイレクト
+     *
+     * @return RedirectResponse
+     */
     public function apply()
     {
-        // ここでは決済方法の独自処理を記載する
-
         // TODO 以下の処理を追加
         // 決済の独自処理
         // 注文番号を送信する
