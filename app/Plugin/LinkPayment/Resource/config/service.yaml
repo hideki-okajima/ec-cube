@@ -3,3 +3,6 @@ services:
   Plugin\LinkPayment\Service\CreditCard:
     public: true
     autowire: true
+  Plugin\LinkPayment\Service\PaymentService:
+    public: true
+    autowire: true

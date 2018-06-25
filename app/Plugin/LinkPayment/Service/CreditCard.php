@@ -12,6 +12,7 @@ namespace Plugin\LinkPayment\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
+use Eccube\Exception\ShoppingException;
 use Eccube\Service\Payment\PaymentDispatcher;
 use Eccube\Service\Payment\PaymentMethod;
 use Eccube\Service\Payment\PaymentResult;
@@ -62,6 +63,7 @@ class CreditCard implements PaymentMethod
      * 決済会社の画面へリダイレクト
      *
      * @return PaymentDispatcher
+     * @throws ShoppingException
      */
     public function apply()
     {
@@ -71,10 +73,9 @@ class CreditCard implements PaymentMethod
         $Order = $this->shoppingService->getOrder();
 
         if (!$Order) {
-            // TODO エラー処理
+            throw new ShoppingException();
         }
 
-        // TODO 決済会社の共通処理はPaymentServiceのdispatchで処理すべきなので移植が必要
         // - 受注ステータスの変更（購入処理中 -> 決済処理中）
         $this->shoppingService->setOrderStatus($Order, OrderStatus::PENDING);
 
@@ -83,10 +84,6 @@ class CreditCard implements PaymentMethod
             $PaymentStatus = $this->entityManager->find(PaymentStatus::class, PaymentStatus::OUTSTANDING);
             $Order->setLinkPaymentPaymentStatus($PaymentStatus);
         }
-
-        // TODO ここでflushはさせたくない
-        $this->entityManager->flush($Order);
-
 
         // 他のコントローラに移譲等の処理をする
         $dispatcher = new PaymentDispatcher();

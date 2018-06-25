@@ -9,12 +9,27 @@
 namespace Plugin\LinkPayment\Service;
 
 
+use Eccube\Entity\Order;
+use Eccube\Entity\OrderItem;
 use Eccube\Service\Payment\PaymentMethod;
+use Eccube\Service\ShoppingService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Eccube\Service\PaymentService as BasePaymentService;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaymentService extends BasePaymentService
 {
+    /**
+     * @var ShoppingService
+     */
+    private $shoppingService;
+
+    public function __construct(RequestStack $requestStack, ShoppingService $shoppingService)
+    {
+        parent::__construct($requestStack);
+        $this->shoppingService = $shoppingService;
+    }
+
     /**
      * ここでは決済会社の共通処理を記載する
      *
@@ -27,6 +42,23 @@ class PaymentService extends BasePaymentService
         // 以下は共通処理
         // - 在庫を減らす(TODO 本体にも在庫を減らす処理はない)
         // - ポイントを減らす
+        /** @var Order $Order */
+        $Order = $this->shoppingService->getOrder();
+        $OrderItems = $Order->getProductOrderItems();
+        /** @var OrderItem $OrderItem */
+        foreach ($OrderItems as $OrderItem) {
+            $ProductClass = $OrderItem->getProductClass();
+
+            if ($ProductClass->isStockUnlimited()) {
+                continue;
+            }
+
+            $quantity = $OrderItem->getQuantity();
+            $stock = $ProductClass->getProductStock()->getStock() - $quantity;
+            // TODO stockの管理を１箇所にしたい
+            $ProductClass->setStock($stock);
+            $ProductClass->getProductStock()->setStock($stock);
+        }
 
         // PaymentMethod->apply に処理を移譲する
         // 別のコントローラに forward など
