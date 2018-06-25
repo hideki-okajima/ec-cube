@@ -38,10 +38,9 @@ class PaymentService extends BasePaymentService
      */
     public function dispatch(PaymentMethod $method)
     {
-        // TODO 以下の更新処理の追加
         // 以下は共通処理
-        // - 在庫を減らす(TODO 本体にも在庫を減らす処理はない)
-        // - ポイントを減らす
+        // - 在庫を減らす
+        // TODO そもそも本体に在庫を減らす処理がないので本体に処理を追加する
         /** @var Order $Order */
         $Order = $this->shoppingService->getOrder();
         $OrderItems = $Order->getProductOrderItems();

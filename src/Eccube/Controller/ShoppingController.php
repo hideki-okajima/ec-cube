@@ -945,8 +945,8 @@ class ShoppingController extends AbstractShoppingController
     private function createPaymentService(Order $Order)
     {
         $serviceClass = $Order->getPayment()->getServiceClass();
-//        $paymentService = new $serviceClass($this->container->get('request_stack')); // コンテナから取得したい
-        $paymentService = $this->container->get($serviceClass);
+        $paymentService = new $serviceClass($this->container->get('request_stack'), $this->shoppingService); // コンテナから取得したい
+//        $paymentService = $this->container->get($serviceClass);
 
         return $paymentService;
     }
@@ -956,8 +956,8 @@ class ShoppingController extends AbstractShoppingController
         $methodClass = $Order->getPayment()->getMethodClass();
         // TODO Plugin/Xxx/Resouce/config/services.yamlでpublicにする必要がある
         // なぜかinjectionできない
-        $PaymentMethod = $this->container->get($methodClass);
-//        $PaymentMethod = new $methodClass($this->shoppingService, $this->entityManager); // コンテナから取得したい
+//        $PaymentMethod = $this->container->get($methodClass);
+        $PaymentMethod = new $methodClass($this->shoppingService, $this->entityManager); // コンテナから取得したい
         $PaymentMethod->setFormType($form);
         // TODO コンテナから取得できるなら以下は不要
 //        $PaymentMethod->setRequest($this->container->get('request_stack')->getCurrentRequest());
