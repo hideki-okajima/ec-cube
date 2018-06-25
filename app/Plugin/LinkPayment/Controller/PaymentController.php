@@ -22,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PaymentController extends AbstractController
 {
@@ -76,12 +77,11 @@ class PaymentController extends AbstractController
     {
         $orderCode = $request->get('code');
 
-        // TODO 正しいリクエストかどうかチェックする必要がある
-        // 複数回リクエストがあった場合に１度しか処理走らないようにする必要がある
-        // 在庫を変更してからこのリクエストまでにOrderの数量が変化しないか心配
+        $Order = $this->getOrderByCode($orderCode);
 
-        /** @var Order $Order */
-        $Order = $this->orderRepository->findOneBy(['order_code' => $orderCode]);
+        if ($this->getUser() != $Order->getCustomer()) {
+            throw new NotFoundHttpException();
+        }
 
         // 受注ステータスを戻す（決済処理中 -> 購入処理中）
         $this->shoppingService->setOrderStatus($Order, OrderStatus::PROCESSING);
@@ -123,6 +123,12 @@ class PaymentController extends AbstractController
     {
         $orderCode = $request->get('code');
 
+        $Order = $this->getOrderByCode($orderCode);
+
+        if ($this->getUser() != $Order->getCustomer()) {
+            throw new NotFoundHttpException();
+        }
+
         // カード情報を保存するなどあればここに処理を追加
 
 
@@ -132,7 +138,6 @@ class PaymentController extends AbstractController
 
     /**
      * @Route("/sample_payment_receive_complete", name="sample_payment_receive_complete")
-     * @Method("POST")
      *
      * TODO この処理は本体に移動させたい
      */
@@ -141,16 +146,47 @@ class PaymentController extends AbstractController
         // 決済会社から受注番号を受け取る
         $orderCode = $request->get('code');
 
-        // TODO 以下の処理を追加
+        $Order = $this->getOrderByCode($orderCode);
+
         // 独自処理
-        // 完了通知リクエストのパラメータの正当性チェック（EC-CUBEの注文番号、）
         // 受注ステータス更新（決済処理中 -> 新規受付）
+        $this->shoppingService->setOrderStatus($Order, OrderStatus::NEW);
+
         // 決済ステータス更新（未決済 -> 仮売上済み）
-        // 決済会社に結果を返す（200 or それ以外）
+        $provisionalSalesPaymentStatus = $this->entityManager->find(PaymentStatus::class, PaymentStatus::PROVISIONAL_SALES);
+        $Order->setLinkPaymentPaymentStatus($provisionalSalesPaymentStatus);
+
 
         // 共通処理
         // 完了メール送信
+        $this->shoppingService->sendOrderMail($Order);
+
+        // TODO 以下の処理を追加
         // 残っていればカート削除
+
+        $this->entityManager->flush();
+
         return new Response("OK!!");
+    }
+
+    /**
+     * @param $orderCode
+     * @return Order
+     */
+    private function getOrderByCode($orderCode)
+    {
+        /** @var OrderStatus $pendingOrderStatus */
+        $pendingOrderStatus = $this->entityManager->find(OrderStatus::class, OrderStatus::PENDING);
+
+        $outstandingPaymentStatus = $this->entityManager->find(PaymentStatus::class, PaymentStatus::OUTSTANDING);
+
+        /** @var Order $Order */
+        $Order = $this->orderRepository->findOneBy(['order_code' => $orderCode, 'OrderStatus' => $pendingOrderStatus, 'LinkPaymentPaymentStatus' => $outstandingPaymentStatus]);
+
+        if (is_null($Order)) {
+            throw new NotFoundHttpException();
+        }
+
+        return $Order;
     }
 }
