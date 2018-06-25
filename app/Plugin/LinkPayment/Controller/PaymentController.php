@@ -12,6 +12,7 @@ use Eccube\Annotation\ForwardOnly;
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
+use Eccube\Entity\OrderItem;
 use Eccube\Repository\OrderRepository;
 use Eccube\Service\ShoppingService;
 use Plugin\LinkPayment\Entity\PaymentStatus;
@@ -67,13 +68,47 @@ class PaymentController extends AbstractController
 
     /**
      * @Route("/sample_payment_back", name="sample_payment_back")
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function back()
+    public function back(Request $request)
     {
-        // TODO 以下の処理を追加
+        $orderCode = $request->get('code');
+
+        // TODO 正しいリクエストかどうかチェックする必要がある
+        // 複数回リクエストがあった場合に１度しか処理走らないようにする必要がある
+        // 在庫を変更してからこのリクエストまでにOrderの数量が変化しないか心配
+
+        /** @var Order $Order */
+        $Order = $this->orderRepository->findOneBy(['order_code' => $orderCode]);
+
         // 受注ステータスを戻す（決済処理中 -> 購入処理中）
+        $this->shoppingService->setOrderStatus($Order, OrderStatus::PROCESSING);
+
         // 在庫を戻す
+        /** @var Order $Order */
+        $OrderItems = $Order->getProductOrderItems();
+        /** @var OrderItem $OrderItem */
+        foreach ($OrderItems as $OrderItem) {
+            $ProductClass = $OrderItem->getProductClass();
+
+            if ($ProductClass->isStockUnlimited()) {
+                continue;
+            }
+
+            $quantity = $OrderItem->getQuantity();
+            $stock = (int)$ProductClass->getProductStock()->getStock() + (int)$quantity;
+            // TODO stockの管理を１箇所にしたい
+            $ProductClass->setStock($stock);
+            $ProductClass->getProductStock()->setStock($stock);
+        }
+
+        // TODO 以下の処理を追加
         // ポイントを戻す
+
+
+        $this->entityManager->flush();
+
         return $this->redirectToRoute("shopping");
     }
 
