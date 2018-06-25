@@ -131,6 +131,7 @@ class PaymentController extends AbstractController
 
         // カード情報を保存するなどあればここに処理を追加
 
+        // TODO カートを削除する
 
         // TODO 受注番号を完了画面に送って画面に表示させたい
         return $this->redirectToRoute("shopping_complete");
@@ -161,8 +162,7 @@ class PaymentController extends AbstractController
         // 完了メール送信
         $this->shoppingService->sendOrderMail($Order);
 
-        // TODO 以下の処理を追加
-        // 残っていればカート削除
+        // TODO 残っていればカート削除
 
         $this->entityManager->flush();
 
