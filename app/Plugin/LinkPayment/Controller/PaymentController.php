@@ -10,6 +10,7 @@ namespace Plugin\LinkPayment\Controller;
 
 use Eccube\Annotation\ForwardOnly;
 use Eccube\Controller\AbstractController;
+use Eccube\Entity\Customer;
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
 use Eccube\Entity\OrderItem;
@@ -103,9 +104,12 @@ class PaymentController extends AbstractController
             $ProductClass->getProductStock()->setStock($stock);
         }
 
-        // TODO 以下の処理を追加
         // ポイントを戻す
-
+        /** @var Customer $Customer */
+        $Customer = $this->getUser();
+        $point = $Customer->getPoint();
+        $usePoint = $Order->getUsePoint();
+        $Customer->setPoint((int)$point + (int)$usePoint);
 
         $this->entityManager->flush();
 
