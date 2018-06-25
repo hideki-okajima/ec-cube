@@ -79,7 +79,6 @@ class CreditCard implements PaymentMethod
         $this->shoppingService->setOrderStatus($Order, OrderStatus::PENDING);
 
         // - 決済ステータス（なし -> 未決済）
-        // TODO DBにレコードを追加する必要がある
         if ($Order->getLinkPaymentPaymentStatus() == null) {
             $PaymentStatus = $this->entityManager->find(PaymentStatus::class, PaymentStatus::OUTSTANDING);
             $Order->setLinkPaymentPaymentStatus($PaymentStatus);
