@@ -817,8 +817,10 @@ class ShoppingController extends AbstractShoppingController
                 // ステータス履歴も保持しておく？ 在庫引き当ての仕様もセットで。
                 if ($dispatcher instanceof PaymentDispatcher) {
                     if ($dispatcher->isForward()) {
+                        $this->entityManager->getConnection()->commit();
                         return $this->forwardToRoute($dispatcher->getRoute(), $dispatcher->getPathParameters(), $dispatcher->getQueryParameters());
                     } else {
+                        $this->entityManager->getConnection()->commit();
                         return $this->redirectToRoute($dispatcher->getRoute(), $dispatcher->getQueryParameters());
                     }
                 }

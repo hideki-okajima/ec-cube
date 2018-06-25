@@ -74,11 +74,9 @@ class CreditCard implements PaymentMethod
             // TODO エラー処理
         }
 
-        dump($Order);
         // TODO 決済会社の共通処理はPaymentServiceのdispatchで処理すべきなので移植が必要
         // - 受注ステータスの変更（購入処理中 -> 決済処理中）
         $this->shoppingService->setOrderStatus($Order, OrderStatus::PENDING);
-        dump($Order);
 
         // - 決済ステータス（なし -> 未決済）
         // TODO DBにレコードを追加する必要がある
@@ -88,10 +86,7 @@ class CreditCard implements PaymentMethod
         }
 
         // TODO ここでflushはさせたくない
-        // TODO なぜか保存できない
-        $this->entityManager->persist($Order);
         $this->entityManager->flush($Order);
-        dump($Order);
 
 
         // 他のコントローラに移譲等の処理をする

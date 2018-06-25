@@ -25,9 +25,7 @@ class PaymentService extends BasePaymentService
     {
         // TODO 以下の更新処理の追加
         // 以下は共通処理
-        // - 受注ステータスの変更（購入処理中 -> 決済処理中）
-        // - 決済ステータス（なし -> 未決済）
-        // - 在庫を減らす
+        // - 在庫を減らす(TODO 本体にも在庫を減らす処理はない)
         // - ポイントを減らす
 
         // PaymentMethod->apply に処理を移譲する
