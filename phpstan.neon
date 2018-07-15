@@ -1,0 +1,5 @@
+includes:
+  - vendor/lookyman/phpstan-symfony/extension.neon
+parameters:
+  symfony:
+    container_xml_path: %rootDir%/../../../var/cache/dev/EccubeDevDebugProjectContainer.xml # or srcDevDebugProjectContainer.xml for Symfony 4+

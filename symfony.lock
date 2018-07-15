@@ -119,6 +119,9 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "jean85/pretty-package-versions": {
+        "version": "1.1"
+    },
     "justinrainbow/json-schema": {
         "version": "5.2.6"
     },
@@ -127,6 +130,9 @@
     },
     "knplabs/knp-paginator-bundle": {
         "version": "v2.7.1"
+    },
+    "lookyman/phpstan-symfony": {
+        "version": "0.4.0"
     },
     "mikey179/vfsstream": {
         "version": "v1.6.5"
@@ -139,6 +145,30 @@
     },
     "nesbot/carbon": {
         "version": "1.22.1"
+    },
+    "nette/bootstrap": {
+        "version": "v2.4.5"
+    },
+    "nette/di": {
+        "version": "v2.4.11"
+    },
+    "nette/finder": {
+        "version": "v2.4.1"
+    },
+    "nette/neon": {
+        "version": "v2.4.2"
+    },
+    "nette/php-generator": {
+        "version": "v3.0.3"
+    },
+    "nette/robot-loader": {
+        "version": "v3.0.3"
+    },
+    "nette/utils": {
+        "version": "v2.5.1"
+    },
+    "nikic/php-parser": {
+        "version": "v3.1.5"
     },
     "ocramius/package-versions": {
         "version": "1.2.0"
@@ -154,6 +184,15 @@
     },
     "php-cs-fixer/diff": {
         "version": "v1.2.0"
+    },
+    "phpstan/phpdoc-parser": {
+        "version": "0.2"
+    },
+    "phpstan/phpstan": {
+        "version": "0.9.2"
+    },
+    "pimple/pimple": {
+        "version": "v1.1.1"
     },
     "psr/cache": {
         "version": "1.0.1"
