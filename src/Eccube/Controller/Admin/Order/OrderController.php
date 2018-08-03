@@ -19,6 +19,7 @@ use Eccube\Entity\ExportCsvRow;
 use Eccube\Entity\Master\CsvType;
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
+use Eccube\Entity\OrderItem;
 use Eccube\Entity\OrderPdf;
 use Eccube\Entity\Shipping;
 use Eccube\Event\EccubeEvents;
@@ -407,9 +408,11 @@ class OrderController extends AbstractController
             $this->csvExportService->exportData(function ($entity, $csvService) use ($request) {
                 $Csvs = $csvService->getCsvs();
 
+                /** @var Order $Order */
                 $Order = $entity;
                 $OrderItems = $Order->getOrderItems();
 
+                /** @var OrderItem $OrderItem */
                 foreach ($OrderItems as $OrderItem) {
                     $ExportCsvRow = new ExportCsvRow();
 
