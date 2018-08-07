@@ -268,7 +268,7 @@ class AdminController extends AbstractController
         $rawWeekly = $this->getData($fromDate, $toDate, 'Y/m/d');
 
         // 月間の売上金額
-        $fromDate = Carbon::now()->startOfMonth();
+        $fromDate = Carbon::today()->subMonth();
         $rawMonthly = $this->getData($fromDate, $toDate, 'Y/m/d');
 
         // 年間の売上金額
