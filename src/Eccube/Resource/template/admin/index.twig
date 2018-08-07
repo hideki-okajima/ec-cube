@@ -79,7 +79,8 @@ file that was distributed with this source code.
                     yAxes: [
                         {
                             id: 'y-axis-1',
-                            display: false,
+                            display: true, // trueに変更
+                            position: 'left', // 左に表示
                             ticks: {
                                 beginAtZero: true,
                                 callback: function(label, index, labels) {
@@ -89,13 +90,17 @@ file that was distributed with this source code.
                         },
                         {
                             id: 'y-axis-2',
-                            display: false,
+                            display: true, // trueに変更
+                            position: 'right', // 右に表示
                             ticks: {
                                 beginAtZero: true,
                                 stepSize: 50,
                                 callback: function(label, index, labels) {
                                     return label.toString();
                                 }
+                            },
+                            gridLines: { // 件数の横グリッドを消す
+                                drawOnChartArea: false
                             }
                         }
                     ]
