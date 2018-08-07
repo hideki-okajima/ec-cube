@@ -67,14 +67,14 @@ file that was distributed with this source code.
                         bottom: 0
                     }
                 },
-                // tooltips: {
-                //     callbacks: {
-                //         label: function(tooltipItem, data) {
-                //             console.log(tooltipItem);
-                //             return '¥' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                //         }
-                //     }
-                // },
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            console.log(tooltipItem);
+                            return tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        }
+                    }
+                },
                 scales: {
                     yAxes: [
                         {
