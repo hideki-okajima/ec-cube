@@ -262,7 +262,7 @@ file that was distributed with this source code.
                                             <div id="position_{{ target_id }}"
                                                  class="d-block p-3 border border-ec-gray border-top-0 border-right-0 border-left-0 ui-sortable">
                                                 <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__head'|trans }}</p>
-                                                {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                     {{ include('@admin/Content/layout_block.twig') }}
                                                     {% set loop_index = loop_index + 1 %}
                                                 {% else %}
@@ -273,7 +273,7 @@ file that was distributed with this source code.
                                             <div id="position_{{ target_id }}"
                                                  class="d-block p-3 border border-ec-gray border-top-0 border-right-0 border-left-0 ui-sortable">
                                                 <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__body_after'|trans }}</p>
-                                                {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                     {{ include('@admin/Content/layout_block.twig') }}
                                                     {% set loop_index = loop_index + 1 %}
                                                 {% else %}
@@ -284,7 +284,7 @@ file that was distributed with this source code.
                                             <div id="position_{{ target_id }}"
                                                  class="d-block p-3 border border-ec-gray border-top-0 border-right-0 border-left-0 ui-sortable">
                                                 <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__header'|trans }}</p>
-                                                {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                     {{ include('@admin/Content/layout_block.twig') }}
                                                     {% set loop_index = loop_index + 1 %}
                                                 {% else %}
@@ -295,7 +295,7 @@ file that was distributed with this source code.
                                             <div id="position_{{ target_id }}"
                                                  class="d-block p-3 border border-ec-gray border-top-0 border-right-0 border-left-0 ui-sortable">
                                                 <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__contents_top'|trans }}</p>
-                                                {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                     {{ include('@admin/Content/layout_block.twig') }}
                                                     {% set loop_index = loop_index + 1 %}
                                                 {% else %}
@@ -309,7 +309,7 @@ file that was distributed with this source code.
                                                         <div id="position_{{ target_id }}"
                                                              class="d-block ui-sortable">
                                                             <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__side_left'|trans }}</p>
-                                                            {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                            {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                                 {{ include('@admin/Content/layout_block.twig') }}
                                                                 {% set loop_index = loop_index + 1 %}
                                                             {% else %}
@@ -323,7 +323,7 @@ file that was distributed with this source code.
                                                             <div id="position_{{ target_id }}"
                                                                  class="d-block p-3 border border-ec-gray border-top-0 border-left-0 border-right-0 ui-sortable">
                                                                 <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__main_top'|trans }}</p>
-                                                                {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                                {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                                     {{ include('@admin/Content/layout_block.twig') }}
                                                                     {% set loop_index = loop_index + 1 %}
                                                                 {% else %}
@@ -338,7 +338,7 @@ file that was distributed with this source code.
                                                             <div id="position_{{ target_id }}"
                                                                  class="d-block p-3 border border-ec-gray border-top-0 border-left-0 border-right-0 ui-sortable">
                                                                 <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__main_bottom'|trans }}</p>
-                                                                {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                                {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                                     {{ include('@admin/Content/layout_block.twig') }}
                                                                     {% set loop_index = loop_index + 1 %}
                                                                 {% else %}
@@ -352,7 +352,7 @@ file that was distributed with this source code.
                                                         <div id="position_{{ target_id }}"
                                                              class="d-block p-3 h-100 ui-sortable">
                                                             <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__side_right'|trans }}</p>
-                                                            {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                            {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                                 {{ include('@admin/Content/layout_block.twig') }}
                                                                 {% set loop_index = loop_index + 1 %}
                                                             {% else %}
@@ -367,7 +367,7 @@ file that was distributed with this source code.
                                                 <div id="position_{{ target_id }}"
                                                      class="d-block p-3 ui-sortable">
                                                     <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__contents_bottom'|trans }}</p>
-                                                    {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                    {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                         {{ include('@admin/Content/layout_block.twig') }}
                                                         {% set loop_index = loop_index + 1 %}
                                                     {% else %}
@@ -380,7 +380,7 @@ file that was distributed with this source code.
                                                 <div id="position_{{ target_id }}"
                                                      class="d-block p-3 ui-sortable">
                                                     <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__footer'|trans }}</p>
-                                                    {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                    {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                         {{ include('@admin/Content/layout_block.twig') }}
                                                         {% set loop_index = loop_index + 1 %}
                                                     {% else %}
@@ -393,7 +393,7 @@ file that was distributed with this source code.
                                                 <div id="position_{{ target_id }}"
                                                      class="d-block p-3 ui-sortable">
                                                     <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__drawer'|trans }}</p>
-                                                    {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                    {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                         {{ include('@admin/Content/layout_block.twig') }}
                                                         {% set loop_index = loop_index + 1 %}
                                                     {% else %}
@@ -406,7 +406,7 @@ file that was distributed with this source code.
                                                 <div id="position_{{ target_id }}"
                                                      class="d-block p-3 border-top-0 border-right-0 border-left-0 ui-sortable">
                                                     <p class="font-weight-bold mb-2">{{ 'admin.content.layout_section__close_body_before'|trans }}</p>
-                                                    {% for BlockPosition in Layout.getBlockPositionsBy(target_id) %}
+                                                    {% for BlockPosition in Layout.getBlockPositionsByTargetId(target_id) %}
                                                         {{ include('@admin/Content/layout_block.twig') }}
                                                         {% set loop_index = loop_index + 1 %}
                                                     {% else %}
