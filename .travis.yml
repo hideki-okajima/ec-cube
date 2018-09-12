@@ -54,12 +54,13 @@ package_api_setup: &package_api_setup |
 
 install:
   - &composer_install composer install --dev --no-interaction -o --apcu-autoloader
-  - *eccube_setup
+#  - *eccube_setup
 
 script:
-  - ./bin/phpunit --exclude-group cache-clear,cache-clear-install
-  - ./bin/phpunit --group cache-clear
-  - ./bin/phpunit --group cache-clear-install
+  - echo 'test'
+#  - ./bin/phpunit --exclude-group cache-clear,cache-clear-install
+#  - ./bin/phpunit --group cache-clear
+#  - ./bin/phpunit --group cache-clear-install
 
 jobs:
   fast_finish: true
