@@ -464,6 +464,9 @@ class Horizon_Store extends Abstract_Plugin
     {
         $published = copy(codecept_data_dir().'/'.'plugins/'.$fileName, codecept_root_dir().'/repos/'.$fileName);
         $this->I->assertTrue($published, "公開できた ${fileName}");
+        $output = [];
+        exec("ls -ltra repos/", $output);
+        echo implode(PHP_EOL, $output).PHP_EOL;
     }
 }
 
