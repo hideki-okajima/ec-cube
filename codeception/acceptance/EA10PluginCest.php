@@ -714,6 +714,7 @@ class Horizon_Local extends Local_Plugin
         parent::__construct($I, 'Horizon');
         $this->tables[] = 'dtb_dash';
         $this->columns[] = 'dtb_cart.is_horizon';
+        $this->columns[] = 'dtb_cart.dash_id';
         $this->traits['\Plugin\Horizon\Entity\CartTrait'] = 'Cart';
     }
 
@@ -730,6 +731,7 @@ class Horizon_Store extends Store_Plugin
         parent::__construct($I, 'Horizon');
         $this->tables[] = 'dtb_dash';
         $this->columns[] = 'dtb_cart.is_horizon';
+        $this->columns[] = 'dtb_cart.dash_id';
         $this->traits['\Plugin\Horizon\Entity\CartTrait'] = 'Cart';
     }
 
@@ -779,7 +781,9 @@ class Boomerang_Store extends Store_Plugin
     public function __construct(AcceptanceTester $I)
     {
         parent::__construct($I, 'Boomerang');
+        $this->tables[] = 'dtb_bar';
         $this->columns[] = 'dtb_cart.is_boomerang';
+        $this->columns[] = 'dtb_cart.bar_id';
         $this->traits['\Plugin\Boomerang\Entity\CartTrait'] = 'Cart';
     }
 
@@ -794,6 +798,7 @@ class Boomerang_Local extends Local_Plugin
     public function __construct(AcceptanceTester $I)
     {
         parent::__construct($I, 'Boomerang');
+        $this->tables[] = 'dtb_bar';
         $this->columns[] = 'dtb_cart.is_boomerang';
         $this->traits['\Plugin\Boomerang\Entity\CartTrait'] = 'Cart';
     }
