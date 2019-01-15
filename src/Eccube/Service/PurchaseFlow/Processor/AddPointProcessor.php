@@ -75,15 +75,10 @@ class AddPointProcessor extends ItemHolderPostValidator
                     $pointRate = $basicPointRate;
                 }
 
-                // TODO: ポイントは税抜き分しか割引されない、ポイント明細は税抜きのままでいいのか？
                 $point = 0;
-                if ($item->isPoint()) {
-                    $point = round($item->getPrice() * ($pointRate / 100)) * $item->getQuantity();
-                // Only calc point on product
-                } elseif ($item->isProduct()) {
+                // 明細が商品またはポイントまたは割引の場合に加算ポイントを計算する（送料、手数料、税額では加算ポイントを計算しない）
+                if ($item->isProduct() || $item->isPoint() || $item->isDiscount()) {
                     // ポイント = 単価 * ポイント付与率 * 数量
-                    $point = round($item->getPrice() * ($pointRate / 100)) * $item->getQuantity();
-                } elseif($item->isDiscount()) {
                     $point = round($item->getPrice() * ($pointRate / 100)) * $item->getQuantity();
                 }
 
