@@ -14,6 +14,7 @@
 namespace Eccube\Tests\Web\Admin\Product;
 
 use Eccube\Entity\Product;
+use Eccube\Entity\ProductClass;
 use Eccube\Repository\CategoryRepository;
 use Eccube\Repository\ProductRepository;
 use Eccube\Tests\Web\Admin\AbstractAdminWebTestCase;
@@ -351,6 +352,52 @@ class CsvImportControllerTest extends AbstractAdminWebTestCase
                 $this->verify();
             }
         }
+    }
+
+    /**
+     * csvアップトードで送料の設定をする.
+     */
+    public function testCsvImportWithExistsProductsAddDeliveryFee()
+    {
+
+        /** @var Product $Product */
+        $Product = $this->productRepo->find(2);
+        /** @var ProductClass $ProductClass */
+
+        $ProductClass = $Product->getProductClasses()[0];
+        $ProductClass->setDeliveryFee(null);
+        $this->entityManager->flush($ProductClass);
+
+        $this->expected = null;    // 既存2商品の送料
+        $this->actual = $ProductClass->getDeliveryFee();
+        $this->verify();
+
+        // 商品生成
+        $csv = $this->createCsvAsArray();
+
+        $csv[1][0] = 2;                        // 商品ID = 2
+        $csv[1][22] = '300';             // 送料
+
+        $this->filepath = $this->createCsvFromArray($csv);
+
+        $crawler = $this->scenario();
+
+        $this->entityManager->clear();
+
+        $this->assertRegexp('/CSVファイルをアップロードしました/u',
+            $crawler->filter('div.alert-success')->text());
+
+        // 規格1のみ商品の確認
+        // dtb_product_class.del_flg = 1 の確認をしたいので PDO で取得
+        $pdo = $this->entityManager->getConnection()->getWrappedConnection();
+        $sql = "SELECT * FROM dtb_product_class WHERE id = 10";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchColumn(13);
+
+        $this->expected = 300;
+        $this->actual = $result;
+        $this->verify();
     }
 
     public function testCsvTemplateWithProduct()
