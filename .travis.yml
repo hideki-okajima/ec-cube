@@ -84,6 +84,7 @@ jobs:
     stage: E2E Test
     before_install:
       - sudo apt-get update
+      - sudo -E apt-get -yq --no-install-suggests --no-install-recommends install google-chrome-stable
       - *php_setup
       - wget -c -nc --retry-connrefused --tries=0 http://chromedriver.storage.googleapis.com/2.43/chromedriver_linux64.zip
       - unzip -o -q chromedriver_linux64.zip
