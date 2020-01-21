@@ -1,4 +1,21 @@
 {
+    "api-platform/api-pack": {
+        "version": "v1.2.1"
+    },
+    "api-platform/core": {
+        "version": "2.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.1",
+            "ref": "18727d8f229306860b46955f438e1897421da689"
+        },
+        "files": [
+            "app/config/eccube/packages/api_platform.yaml",
+            "app/config/eccube/routes/api_platform.yaml",
+            "src/Eccube/Entity/.gitignore"
+        ]
+    },
     "behat/gherkin": {
         "version": "v4.5.1"
     },
@@ -175,6 +192,18 @@
     },
     "myclabs/deep-copy": {
         "version": "1.7.0"
+    },
+    "nelmio/cors-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "6388de23860284db9acce0a7a5d9d13153bcb571"
+        },
+        "files": [
+            "app/config/eccube/packages/nelmio_cors.yaml"
+        ]
     },
     "nesbot/carbon": {
         "version": "1.22.1"
@@ -476,8 +505,14 @@
     "symfony/polyfill-ctype": {
         "version": "v1.8.0"
     },
+    "symfony/polyfill-iconv": {
+        "version": "v1.11.0"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.6.0"
+    },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.11.0"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.6.0"
@@ -502,6 +537,9 @@
     },
     "symfony/property-access": {
         "version": "v3.4.1"
+    },
+    "symfony/property-info": {
+        "version": "v4.4.2"
     },
     "symfony/proxy-manager-bridge": {
         "version": "v3.4.4"
@@ -628,6 +666,9 @@
     },
     "webmozart/assert": {
         "version": "1.3.0"
+    },
+    "willdurand/negotiation": {
+        "version": "v2.3.1"
     },
     "zendframework/zend-code": {
         "version": "3.3.0"
