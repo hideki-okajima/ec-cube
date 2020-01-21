@@ -13,6 +13,7 @@ services:
 
 addons:
   apt:
+    update: true
     sources:
       - google-chrome
     packages:
