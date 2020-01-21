@@ -11,13 +11,13 @@ services:
   - postgresql
   - xvfb
 
-addons:
-  apt:
-    update: true
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
+#addons:
+#  apt:
+#    update: true
+#    sources:
+#      - google-chrome
+#    packages:
+#      - google-chrome-stable
 
 cache:
   directories:
