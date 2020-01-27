@@ -35,6 +35,7 @@
         "ec-cube/plugin-installer": "~0.0.6",
         "egulias/email-validator": "^2.1",
         "friendsofphp/php-cs-fixer": "^2.10",
+        "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^6.3",
         "knplabs/knp-paginator-bundle": "^2.7",
         "mobiledetect/mobiledetectlib": "^2.8",

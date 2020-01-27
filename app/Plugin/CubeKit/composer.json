@@ -1,0 +1,12 @@
+{
+  "name": "ec-cube/CubeKit",
+  "version": "1.0.0",
+  "description": "Cube Kit",
+  "type": "eccube-plugin",
+  "require": {
+    "ec-cube/plugin-installer": "~0.0.7"
+  },
+  "extra": {
+    "code": "CubeKit"
+  }
+}
