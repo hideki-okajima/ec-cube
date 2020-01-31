@@ -1,9 +1,11 @@
 <?php
 
 /*
- * This file is part of the EccubeApi
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ *
+ * http://www.ec-cube.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,8 +13,10 @@
 
 namespace Eccube\Repository\OAuth2\OpenID;
 
-use Doctrine\ORM\EntityRepository;
+use Eccube\Entity\OAuth2\OpenID\PublicKey;
+use Eccube\Repository\AbstractRepository;
 use OAuth2\Storage\PublicKeyInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * PublicKeyRepository
@@ -22,8 +26,18 @@ use OAuth2\Storage\PublicKeyInterface;
  *
  * @author Kentaro Ohkouchi
  */
-class PublicKeyRepository extends EntityRepository implements PublicKeyInterface
+class PublicKeyRepository extends AbstractRepository implements PublicKeyInterface
 {
+    /**
+     * ClientRepository constructor.
+     *
+     * @param RegistryInterface $registry
+     */
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, PublicKey::class);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -33,6 +47,7 @@ class PublicKeyRepository extends EntityRepository implements PublicKeyInterface
         if ($PublicKey) {
             return $PublicKey->getPublicKey();
         }
+
         return null;
     }
 
@@ -45,6 +60,7 @@ class PublicKeyRepository extends EntityRepository implements PublicKeyInterface
         if ($PublicKey) {
             return $PublicKey->getPrivateKey();
         }
+
         return null;
     }
 
@@ -57,6 +73,7 @@ class PublicKeyRepository extends EntityRepository implements PublicKeyInterface
         if ($PublicKey) {
             return $PublicKey->getEncryptionAlgorithm();
         }
+
         return null;
     }
 
@@ -64,30 +81,33 @@ class PublicKeyRepository extends EntityRepository implements PublicKeyInterface
      * client_id を指定して PublicKey を取得します.
      *
      * @param string $client_id OAuth2.0 Client ID
+     *
      * @return \Eccube\Entity\OAuth2\OpenID\PublicKey
      */
     public function getPublicKeyByClientId($client_id = null)
     {
         if ($client_id) {
-            $clientStorage  = $this->getEntityManager()->getRepository('Eccube\Entity\OAuth2\Client');
+            $clientStorage = $this->getEntityManager()->getRepository('Eccube\Entity\OAuth2\Client');
             $userStorage = $this->getEntityManager()->getRepository('Eccube\Entity\OAuth2\OpenID\UserInfo');
-            $Client = $clientStorage->findOneBy(array('client_identifier' => $client_id));
+            $Client = $clientStorage->findOneBy(['client_identifier' => $client_id]);
             if (!is_object($Client)) {
                 return null;
             }
-            $userInfoConditions = array();
+            $userInfoConditions = [];
             if ($Client->hasMember()) {
-                $userInfoConditions = array('Member' => $Client->getMember());
+                $userInfoConditions = ['Member' => $Client->getMember()];
             } elseif ($Client->hasCustomer()) {
-                $userInfoConditions = array('Customer' => $Client->getCustomer());
+                $userInfoConditions = ['Customer' => $Client->getCustomer()];
             } else {
                 // nothing public key
                 return null;
             }
             $UserInfo = $userStorage->findOneBy($userInfoConditions);
-            $PublicKey = $this->findOneBy(array('UserInfo' => $UserInfo));
+            $PublicKey = $this->findOneBy(['UserInfo' => $UserInfo]);
+
             return $PublicKey;
         }
+
         return null;
     }
 }

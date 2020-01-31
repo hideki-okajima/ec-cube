@@ -25,6 +25,11 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class ClientRepository extends AbstractRepository implements ClientCredentialsInterface
 {
+    /**
+     * ClientRepository constructor.
+     *
+     * @param RegistryInterface $registry
+     */
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Client::class);

@@ -1,9 +1,11 @@
 <?php
 
 /*
- * This file is part of the EccubeApi
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ *
+ * http://www.ec-cube.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,8 +13,10 @@
 
 namespace Eccube\Repository\OAuth2\OpenID;
 
-use Doctrine\ORM\EntityRepository;
+use Eccube\Entity\OAuth2\OpenID\UserInfo;
+use Eccube\Repository\AbstractRepository;
 use OAuth2\OpenID\Storage\UserClaimsInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * UserInfoRepository
@@ -22,8 +26,17 @@ use OAuth2\OpenID\Storage\UserClaimsInterface;
  *
  * @author Kentaro Ohkouchi
  */
-class UserInfoRepository extends EntityRepository implements UserClaimsInterface
+class UserInfoRepository extends AbstractRepository implements UserClaimsInterface
 {
+    /**
+     * ClientRepository constructor.
+     *
+     * @param RegistryInterface $registry
+     */
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, UserInfo::class);
+    }
 
     /**
      * 要求された scope を指定してクレームの配列を取得する.
@@ -32,9 +45,11 @@ class UserInfoRepository extends EntityRepository implements UserClaimsInterface
      *
      * @param integer $user_id UserInfo::id
      * @param string $scope 要求されたスコープ. スペース区切りで複数指定可能.
+     *
      * @return array 要求されたクレームの配列
      */
-    public function getUserClaims($user_id, $scope) {
+    public function getUserClaims($user_id, $scope)
+    {
         // response_type=token の時は UserInfo::id が渡ってくる. それ以外は UserInfo::sub が渡ってくる
         if (is_numeric($user_id)) {
             $searchConditions['id'] = $user_id;
@@ -42,9 +57,9 @@ class UserInfoRepository extends EntityRepository implements UserClaimsInterface
             $searchConditions['sub'] = $user_id;
         }
 
-        $UserInfo =  $this->findOneBy($searchConditions);
+        $UserInfo = $this->findOneBy($searchConditions);
         if (!is_object($UserInfo)) {
-            return array();
+            return [];
         }
         // UserInfo の情報を同期する
         if (is_object($UserInfo->getCustomer())) {
@@ -55,7 +70,7 @@ class UserInfoRepository extends EntityRepository implements UserClaimsInterface
         $UserInfoAddress = $UserInfo->getAddress();
         $this->getEntityManager()->flush($UserInfoAddress);
         $this->getEntityManager()->flush($UserInfo);
-        $scopes = array();
+        $scopes = [];
         if ($scope) {
             $scopes = explode(' ', $scope);
         }

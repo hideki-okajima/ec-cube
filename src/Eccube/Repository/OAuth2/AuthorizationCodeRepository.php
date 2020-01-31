@@ -1,21 +1,23 @@
 <?php
 
 /*
- * This file is part of the EccubeApi
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ *
+ * http://www.ec-cube.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-
 namespace Eccube\Repository\OAuth2;
 
-use Doctrine\ORM\EntityRepository;
 use Eccube\Entity\OAuth2\AuthorizationCode;
+use Eccube\Repository\AbstractRepository;
 use OAuth2\Storage\AuthorizationCodeInterface;
 use OAuth2\OpenID\Storage\AuthorizationCodeInterface as OpenIDAuthorizationCodeInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * AuthorizationCodeRepository
@@ -24,19 +26,31 @@ use OAuth2\OpenID\Storage\AuthorizationCodeInterface as OpenIDAuthorizationCodeI
  * repository methods below.
  *
  * @author Kentaro Ohkouchi
- * @link http://bshaffer.github.io/oauth2-server-php-docs/cookbook/doctrine2/
+ *
+ * @see http://bshaffer.github.io/oauth2-server-php-docs/cookbook/doctrine2/
  */
-class AuthorizationCodeRepository extends EntityRepository implements AuthorizationCodeInterface, OpenIDAuthorizationCodeInterface
+class AuthorizationCodeRepository extends AbstractRepository implements AuthorizationCodeInterface, OpenIDAuthorizationCodeInterface
 {
+    /**
+     * ClientRepository constructor.
+     *
+     * @param RegistryInterface $registry
+     */
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, AuthorizationCode::class);
+    }
+
     /**
      * コードを指定して Authorization code のフィールドの配列を取得します.
      *
      * @param string $code コードの文字列
+     *
      * @return array Authorization code のフィールドの配列
      */
     public function getAuthorizationCode($code)
     {
-        $authCode = $this->findOneBy(array('code' => $code));
+        $authCode = $this->findOneBy(['code' => $code]);
         if ($authCode && $authCode->getExpires()->getTimestamp() >= time()) {
             $authCode = $authCode->toArray();
             if (is_object($authCode['client'])) {
@@ -47,6 +61,7 @@ class AuthorizationCodeRepository extends EntityRepository implements Authorizat
             }
             $authCode['expires'] = $authCode['expires']->getTimestamp();
         }
+
         return $authCode;
     }
 
@@ -62,27 +77,26 @@ class AuthorizationCodeRepository extends EntityRepository implements Authorizat
      * @param integer $expires 有効期限の UNIX タイムスタンプ
      * @param string $scope 認可された scope. スペース区切りで複数指定可能
      * @param string $id_token OpenID Connect ID token
-     * @return void
      */
     public function setAuthorizationCode($code, $clientIdentifier, $user_id, $redirectUri, $expires, $scope = null, $id_token = null)
     {
         $client = $this->_em->getRepository('Eccube\Entity\OAuth2\Client')
             ->findOneBy(
-                array('client_identifier' => $clientIdentifier)
+                ['client_identifier' => $clientIdentifier]
             );
         $user = $this->_em->getRepository('Eccube\Entity\OAuth2\OpenID\UserInfo')
             ->findOneBy(
-                array('sub' => $user_id)
+                ['sub' => $user_id]
             );
         $AuthorizationCode = $this->_em->getRepository('Eccube\Entity\OAuth2\AuthorizationCode')
             ->findOneBy(
-                array('code' => $code)
+                ['code' => $code]
             );
 
         $now = new \DateTime();
         if ($AuthorizationCode) {
             $AuthorizationCode->setPropertiesFromArray(
-                array(
+                [
                     'code' => $code,
                     'client' => $client,
                     'user' => $user,
@@ -90,12 +104,12 @@ class AuthorizationCodeRepository extends EntityRepository implements Authorizat
                     'expires' => $now->setTimestamp($expires),
                     'scope' => $scope,
                     'id_token' => $id_token,
-                )
+                ]
             );
         } else {
             $AuthorizationCode = new \Eccube\Entity\OAuth2\AuthorizationCode();
             $AuthorizationCode->setPropertiesFromArray(
-                array(
+                [
                     'code' => $code,
                     'client' => $client,
                     'user' => $user,
@@ -103,7 +117,7 @@ class AuthorizationCodeRepository extends EntityRepository implements Authorizat
                     'expires' => $now->setTimestamp($expires),
                     'scope' => $scope,
                     'id_token' => $id_token,
-                )
+                ]
             );
             $this->_em->persist($AuthorizationCode);
         }
@@ -115,11 +129,10 @@ class AuthorizationCodeRepository extends EntityRepository implements Authorizat
      * 期限切れとなった AuthorizationCode を削除します.
      *
      * @param string $code コードの文字列
-     * @return void
      */
     public function expireAuthorizationCode($code)
     {
-        $authCode = $this->findOneBy(array('code' => $code));
+        $authCode = $this->findOneBy(['code' => $code]);
         if ($authCode && $authCode->getExpires()->getTimestamp() <= time()) {
             $this->_em->remove($authCode);
             $this->_em->flush($authCode);

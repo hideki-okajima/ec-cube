@@ -1,9 +1,11 @@
 <?php
 
 /*
- * This file is part of the EccubeApi
+ * This file is part of EC-CUBE
  *
- * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ *
+ * http://www.ec-cube.co.jp/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,9 +13,10 @@
 
 namespace Eccube\Repository\OAuth2;
 
-use Doctrine\ORM\EntityRepository;
 use Eccube\Entity\OAuth2\RefreshToken;
+use Eccube\Repository\AbstractRepository;
 use OAuth2\Storage\RefreshTokenInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * RefreshTokenRepository
@@ -22,19 +25,31 @@ use OAuth2\Storage\RefreshTokenInterface;
  * repository methods below.
  *
  * @author Kentaro Ohkouchi
- * @link http://bshaffer.github.io/oauth2-server-php-docs/cookbook/doctrine2/
+ *
+ * @see http://bshaffer.github.io/oauth2-server-php-docs/cookbook/doctrine2/
  */
-class RefreshTokenRepository extends EntityRepository implements RefreshTokenInterface
+class RefreshTokenRepository extends AbstractRepository implements RefreshTokenInterface
 {
+    /**
+     * ClientRepository constructor.
+     *
+     * @param RegistryInterface $registry
+     */
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, RefreshToken::class);
+    }
+
     /**
      * トークンを指定して RefreshToken のフィールドの配列を取得する.
      *
      * @param string $token トークン文字列
+     *
      * @return array RefreshToken のフィールドの配列
      */
     public function getRefreshToken($token)
     {
-        $refreshToken = $this->findOneBy(array('refresh_token' => $token));
+        $refreshToken = $this->findOneBy(['refresh_token' => $token]);
         if ($refreshToken) {
             $Client = $refreshToken->getClient();
             $User = $refreshToken->getUser();
@@ -51,6 +66,7 @@ class RefreshTokenRepository extends EntityRepository implements RefreshTokenInt
                 $refreshToken['user_id'] = null;
             }
         }
+
         return $refreshToken;
     }
 
@@ -62,16 +78,15 @@ class RefreshTokenRepository extends EntityRepository implements RefreshTokenInt
      * @param integer $user_id UserInfo::id
      * @param integer $expires 有効期限の UNIX タイムスタンプ
      * @param string $scope 認可された scope. スペース区切りで複数指定可能
-     * @return void
      */
     public function setRefreshToken($refreshToken, $clientIdentifier, $user_id, $expires, $scope = null)
     {
         $client = $this->_em->getRepository('Eccube\Entity\OAuth2\Client')
             ->findOneBy(
-                array('client_identifier' => $clientIdentifier)
+                ['client_identifier' => $clientIdentifier]
             );
         // response_type=token の時は UserInfo::id が渡ってくる. それ以外は UserInfo::sub が渡ってくる
-        $searchConditions = array();
+        $searchConditions = [];
         if (is_numeric($user_id)) {
             $searchConditions['id'] = $user_id;
         } else {
@@ -80,13 +95,13 @@ class RefreshTokenRepository extends EntityRepository implements RefreshTokenInt
         $user = $this->_em->getRepository('Eccube\Entity\OAuth2\OpenID\UserInfo')->findOneBy($searchConditions);
         $RefreshToken = new \Eccube\Entity\OAuth2\RefreshToken();
         $now = new \DateTime();
-        $RefreshToken->setPropertiesFromArray(array(
-           'refresh_token'  => $refreshToken,
-           'client'         => $client,
-           'user'           => $user,
-           'expires'        => $now->setTimestamp($expires),
-           'scope'          => $scope,
-        ));
+        $RefreshToken->setPropertiesFromArray([
+           'refresh_token' => $refreshToken,
+           'client' => $client,
+           'user' => $user,
+           'expires' => $now->setTimestamp($expires),
+           'scope' => $scope,
+        ]);
         $this->_em->persist($RefreshToken);
         $this->_em->flush($RefreshToken);
     }
@@ -95,11 +110,10 @@ class RefreshTokenRepository extends EntityRepository implements RefreshTokenInt
      * RefreshToken を削除します.
      *
      * @param string $refreshToken トークン文字列
-     * @return void
      */
     public function unsetRefreshToken($refreshToken)
     {
-        $refreshToken = $this->findOneBy(array('refresh_token' => $refreshToken));
+        $refreshToken = $this->findOneBy(['refresh_token' => $refreshToken]);
         if ($refreshToken) {
             $this->_em->remove($refreshToken);
             $this->_em->flush($refreshToken);
