@@ -5,6 +5,12 @@
     "bheller/images-generator": {
         "version": "1.0.1"
     },
+    "bshaffer/oauth2-server-httpfoundation-bridge": {
+        "version": "v1.4"
+    },
+    "bshaffer/oauth2-server-php": {
+        "version": "v1.11.1"
+    },
     "captbaritone/mailcatcher-codeception-module": {
         "version": "1.2.1"
     },
@@ -131,6 +137,9 @@
     "facebook/webdriver": {
         "version": "1.5.0"
     },
+    "firebase/php-jwt": {
+        "version": "v5.0.0"
+    },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
         "recipe": {
@@ -142,6 +151,9 @@
     },
     "fzaninotto/faker": {
         "version": "v1.7.1"
+    },
+    "gree/jose": {
+        "version": "2.2.1"
     },
     "guzzlehttp/guzzle": {
         "version": "6.3.0"
@@ -211,6 +223,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "0.4.0"
+    },
+    "phpseclib/phpseclib": {
+        "version": "2.0.23"
     },
     "phpspec/prophecy": {
         "version": "1.7.5"
