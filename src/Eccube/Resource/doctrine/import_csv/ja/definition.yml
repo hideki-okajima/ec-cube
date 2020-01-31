@@ -58,3 +58,12 @@
 - dtb_order_item.csv
 - dtb_shipping.csv
 - dtb_template.csv
+- dtb_oauth2_access_token.csv
+- dtb_oauth2_authorization_code.csv
+- dtb_oauth2_client.csv
+- dtb_oauth2_client_scope.csv
+- dtb_oauth2_openid_public_key.csv
+- dtb_oauth2_openid_userinfo.csv
+- dtb_oauth2_openid_userinfo_address.csv
+- dtb_oauth2_refresh_token.csv
+- dtb_oauth2_scope.csv
