@@ -1,0 +1,8 @@
+oauth2:
+    resource: '@TrikoderOAuth2Bundle/Resources/config/routes.xml'
+
+oauth2_restricted:
+    path: ^/api$
+    controller: 'Controller/ApiController::index'
+    defaults:
+        oauth2_scopes: ['read', 'write']

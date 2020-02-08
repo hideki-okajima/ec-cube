@@ -59,6 +59,14 @@ security:
             logout:
                 path: logout
                 target: homepage
+        api_token:
+            pattern: ^/token$
+            security: false
+        api:
+            pattern: ^/api$
+            security: true
+            stateless: true
+            oauth2: true
 
     access_decision_manager:
         strategy: unanimous
