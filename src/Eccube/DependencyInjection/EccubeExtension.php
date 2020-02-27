@@ -65,7 +65,7 @@ class EccubeExtension extends Extension implements PrependExtensionInterface
         // SSL強制時は, httpsのみにアクセス制限する
         $accessControl = [
             ['path' => '^/%eccube_admin_route%/login', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
-            ['path' => '^/api', 'roles' => ['ROLE_OAUTH2_READ', 'ROLE_OAUTH2_WRITE']],
+            ['path' => '^/api', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
             ['path' => '^(/%eccube_admin_route%/|/authorize)', 'roles' => 'ROLE_ADMIN'],
             ['path' => '^/mypage/login', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
             ['path' => '^/mypage/withdraw_complete', 'roles' => 'IS_AUTHENTICATED_ANONYMOUSLY'],
