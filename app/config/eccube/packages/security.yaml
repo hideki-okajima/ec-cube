@@ -24,6 +24,7 @@ security:
             pattern: ^/api
             security: true
             stateless: true
+            oauth2: true
         admin:
             pattern: '^(/%eccube_admin_route%/|/authorize)'
             anonymous: true
