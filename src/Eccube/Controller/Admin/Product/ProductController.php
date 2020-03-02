@@ -47,6 +47,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -304,6 +306,8 @@ class ProductController extends AbstractController
 
     /**
      * @Route("/%eccube_admin_route%/product/product/image/add", name="admin_product_image_add", methods={"POST"})
+     * @param Request $request
+     * @return JsonResponse
      */
     public function addImage(Request $request)
     {
@@ -317,6 +321,7 @@ class ProductController extends AbstractController
         $files = [];
         if (count($images) > 0) {
             foreach ($images as $img) {
+                /** @var UploadedFile $image */
                 foreach ($img as $image) {
                     //ファイルフォーマット検証
                     $mimeType = $image->getMimeType();
@@ -331,30 +336,31 @@ class ProductController extends AbstractController
                     }
 
                     $filename = date('mdHis').uniqid('_').'.'.$extension;
-                    $image->move($this->eccubeConfig['eccube_temp_image_dir'], $filename);
+                    $file = $image->move($this->eccubeConfig['eccube_temp_image_dir'], $filename);
                     $files[] = $filename;
 
-                    if ($this->eccubeConfig->get('eccube_product_image_resize')) {
+                    if ($this->eccubeConfig->get('eccube_product_image_resize') && extension_loaded('gd')) {
 
+                        $filePath = $file->getPathname();
                         // 加工前の画像の情報を取得
-                        list($origin_w, $origin_h, $type) = getimagesize($image);
+                        list($origin_w, $origin_h, $type) = getimagesize($filePath);
 
                         // 加工前のファイルをフォーマット別に読み出す
                         switch ($type) {
                             case IMAGETYPE_JPEG:
-                                $origin_image = imagecreatefromjpeg($image);
+                                $origin_image = imagecreatefromjpeg($filePath);
                                 break;
 
                             case IMAGETYPE_PNG:
-                                $origin_image = imagecreatefrompng($image);
+                                $origin_image = imagecreatefrompng($filePath);
                                 break;
 
                             case IMAGETYPE_GIF:
-                                $origin_image = imagecreatefromgif($image);
+                                $origin_image = imagecreatefromgif($filePath);
                                 break;
 
                             default:
-                                throw new RuntimeException('対応していないファイル形式です。: ', $type);
+                                throw new UnsupportedMediaTypeHttpException('対応していないファイル形式です。: ', $type);
                         }
 
                         // 新しく描画するキャンバスを作成
