@@ -906,3 +906,4 @@ jobs:
         asset_name: eccube-${{ github.event.release.tag_name }}.zip.checksum.sha256
         tag: ${{ github.ref }}
         overwrite: true
+
