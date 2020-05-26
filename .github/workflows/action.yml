@@ -111,7 +111,7 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ ubuntu-18.04 ]
-        php: [ 7.3 ]
+        php: [ 7.2 ]
         db: [ pgsql ]
         group: [ admin01, admin02, admin03, front, installer ]
         include:
@@ -216,7 +216,7 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ ubuntu-18.04 ]
-        php: [ 7.3 ]
+        php: [ 7.2 ]
         db: [ pgsql, mysql ]
         method:
           - test_install_enable_disable_remove_store
@@ -346,7 +346,7 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ ubuntu-18.04 ]
-        php: [ 7.3 ]
+        php: [ 7.2 ]
         db: [ pgsql, mysql ]
         method:
           - test_install_update_remove_store
@@ -475,7 +475,7 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ ubuntu-18.04 ]
-        php: [ 7.3 ]
+        php: [ 7.2 ]
         db: [ pgsql, mysql ]
         method:
           - test_extend_same_table_store
@@ -604,7 +604,7 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ ubuntu-18.04 ]
-        php: [ 7.3 ]
+        php: [ 7.2 ]
         db: [ pgsql, mysql ]
         method:
           - test_dependency_each_install_plugin
@@ -741,7 +741,7 @@ jobs:
       if: github.event_name == 'release' && (github.event.action == 'published' || github.event.action == 'prereleased' )
       uses: nanasess/setup-php@master
       with:
-        php-version: '7.3'
+        php-version: '7.2'
 
     - name: Get Composer Cache Directory
       if: github.event_name == 'release' && (github.event.action == 'published' || github.event.action == 'prereleased' )
