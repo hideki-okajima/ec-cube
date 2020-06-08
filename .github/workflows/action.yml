@@ -107,7 +107,9 @@ jobs:
 
     - name: Update baseinfo with mysql
       if: matrix.db == 'mysql'
-      run: mysql -h 127.0.0.1 -u root -ppassword eccube_db -e "update dtb_base_info set authentication_key='test';"
+      run: |
+        mysql -h 127.0.0.1 -u root -ppassword eccube_db -e "update dtb_base_info set authentication_key='test';"
+        mysql -h 127.0.0.1 -u root -ppassword eccube_db -e "SET GLOBAL sql_mode = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';"
 
     - name: setup-chromedriver
       uses: nanasess/setup-chromedriver@master
