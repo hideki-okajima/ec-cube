@@ -15,6 +15,7 @@ namespace Eccube\GraphQL;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Eccube\GraphQL\Type\DateTimeType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -87,10 +88,10 @@ class Types
             'string' => Type::string(),
             'text' => Type::string(),
             'integer' => Type::int(),
-            'decimal' => Type::float(),
-            'datetimetz' => Type::int(),
             'smallint' => Type::int(),
+            'decimal' => Type::float(),
             'boolean' => Type::boolean(),
+            'datetimetz' => new DateTimeType(),
         ][$fieldMapping['type']];
 
         if ($type) {
