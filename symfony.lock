@@ -2,6 +2,9 @@
     "behat/gherkin": {
         "version": "v4.5.1"
     },
+    "behat/transliterator": {
+        "version": "v1.3.0"
+    },
     "bheller/images-generator": {
         "version": "1.0.1"
     },
@@ -142,6 +145,9 @@
     },
     "fzaninotto/faker": {
         "version": "v1.7.1"
+    },
+    "gedmo/doctrine-extensions": {
+        "version": "v2.4.41"
     },
     "guzzlehttp/guzzle": {
         "version": "6.3.0"
@@ -335,6 +341,9 @@
     "setasign/fpdi-tcpdf": {
         "version": "v2.0.0"
     },
+    "skorp/detect-incompatible-samesite-useragents": {
+        "version": "1.0.0"
+    },
     "suncat/mobile-detect-bundle": {
         "version": "1.0",
         "recipe": {
@@ -482,8 +491,14 @@
     "symfony/polyfill-ctype": {
         "version": "v1.8.0"
     },
+    "symfony/polyfill-iconv": {
+        "version": "v1.17.1"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.6.0"
+    },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.17.1"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.6.0"

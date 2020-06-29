@@ -180,3 +180,11 @@ services:
     Eccube\Session\Storage\Handler\SameSiteNoneCompatSessionHandler:
         arguments:
             - '@native_file_session_handler'
+
+    Gedmo\Translatable\TranslatableListener:
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ '@annotation_reader' ] ]
+            - [ setDefaultLocale, [ 'ja' ] ]
+            - [ setTranslationFallback, [ false ] ]

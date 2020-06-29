@@ -15,6 +15,7 @@ namespace Eccube\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 if (!class_exists('\Eccube\Entity\Product')) {
     /**
@@ -433,6 +434,7 @@ if (!class_exists('\Eccube\Entity\Product')) {
         /**
          * @var string
          *
+         * @Gedmo\Translatable
          * @ORM\Column(name="name", type="string", length=255)
          */
         private $name;
