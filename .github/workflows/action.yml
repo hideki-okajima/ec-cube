@@ -1,84 +1,30 @@
-name: CI/CD for EC-CUBE
-on:
-  push:
-    branches:
-      - 4.0
-    tags:
-      - '*'
-    paths:
-      - '**'
-      - '!*.md'
-  pull_request:
-    paths:
-      - '**'
-      - '!*.md'
-  release:
-    types: [ published ]
+on: push
+
 jobs:
-  phpunit:
-    name: PHPUnit
-    runs-on: ${{ matrix.operating-system }}
-    strategy:
-      fail-fast: false
-      matrix:
-        operating-system: [ ubuntu-18.04 ]
-        php: [ 7.4 ]
-        db: [ sqlite3 ]
-        include:
-          - db: sqlite3
-            database_url: sqlite:///var/eccube.db
-            database_server_version: 3
+  one:
+    runs-on: ubuntu-16.04
     steps:
-    # All steps after this one will have env variable `GHA_BRANCH` passed to them.
-    - name: GITHUB_REF
-      run:   echo ::set-env name=GHA_BRANCH::$(echo $GITHUB_REF | awk -F / '{print $3}')
-      shell: bash
-    - name: Checkout
-      uses: actions/checkout@master
-
-    - name: Get Composer Cache Directory
-      id: composer-cache
-      run: |
-        echo "::set-output name=dir::$(composer config cache-files-dir)"
-    - uses: actions/cache@v1
-      with:
-        path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-
-    - name: Setup PHP
-      uses: nanasess/setup-php@master
-      with:
-        php-version: ${{ matrix.php }}
-
-    - name: composer install
-      run: composer install --dev --no-interaction -o --apcu-autoloader
-
-    - name: Setup EC-CUBE
-      env:
-        DATABASE_URL: ${{ matrix.database_url }}
-        DATABASE_SERVER_VERSION: ${{ matrix.database_server_version }}
-      run: |
-        bin/console doctrine:database:create
-        bin/console doctrine:schema:create
-        bin/console eccube:fixtures:load
-
-    - name: PHPUnit
-      env:
-        APP_ENV: 'test'
-        DATABASE_URL: ${{ matrix.database_url }}
-        DATABASE_SERVER_VERSION: ${{ matrix.database_server_version }}
-        MAILER_URL: 'smtp://localhost:1025'
-      run: |
-        bin/phpunit --exclude-group cache-clear,cache-clear-install,update-schema-doctrine
-        bin/phpunit --group cache-clear
-        bin/phpunit --group cache-clear-install
-        bin/phpunit --group update-schema-doctrine --exclude-group update-schema-doctrine-install
-        bin/phpunit --group update-schema-doctrine-install --filter=testInstallPluginWithNoProxy
-        bin/phpunit --group update-schema-doctrine-install --filter=testInstallPluginWithProxy
-        bin/phpunit --group update-schema-doctrine-install --filter=testEnablePluginWithNoProxy
-        bin/phpunit --group update-schema-doctrine-install --filter=testEnablePluginWithProxy
-        bin/phpunit --group update-schema-doctrine-install --filter=testDisablePluginWithNoProxy
-        bin/phpunit --group update-schema-doctrine-install --filter=testDisablePluginWithProxy
-        bin/phpunit --group update-schema-doctrine-install --filter=testCreateEntityAndTrait
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo "$JOB_CONTEXT"
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$STEPS_CONTEXT"
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+        run: echo "$STRATEGY_CONTEXT"
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTEXT"
