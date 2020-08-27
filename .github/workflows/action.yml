@@ -24,6 +24,7 @@ jobs:
         operating-system: [ ubuntu-18.04 ]
         php: [ 7.4 ]
         db: [ sqlite3 ]
+        include:
           - db: sqlite3
             database_url: sqlite:///var/eccube.db
             database_server_version: 3
