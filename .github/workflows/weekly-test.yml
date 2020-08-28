@@ -76,5 +76,5 @@ jobs:
       - name: Upload packages
         uses: actions/upload-artifact@v2
         with:
-          name: eccube-${{ github.event.head_commit.timestamp }}
+          name: eccube-${{ github.event.head_commit.id }}
           path: ${{ runner.workspace }}/
