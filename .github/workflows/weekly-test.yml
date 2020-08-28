@@ -32,8 +32,9 @@ jobs:
       - name: Packaging
         working-directory: ../
         env:
-          TAG_NAME: ${{ github.event.head_commit.id }}
+          COMMIT_ID: ${{ github.event.head_commit.id }}
           REPOSITORY_NAME: ${{ github.event.repository.name }}
+          OUTPUT_DIR: _output
         run: |
           rm -rf $GITHUB_WORKSPACE/.editorconfig
           rm -rf $GITHUB_WORKSPACE/.gitignore
@@ -63,18 +64,19 @@ jobs:
           chmod -R o+w $GITHUB_WORKSPACE
 
           echo "complession files..."
-          tar czfp eccube-$TAG_NAME.tar.gz $REPOSITORY_NAME
-          zip -ry eccube-$TAG_NAME.zip $REPOSITORY_NAME 1> /dev/null
-          md5sum eccube-$TAG_NAME.tar.gz | awk '{ print $1 }' > eccube-$TAG_NAME.tar.gz.checksum.md5
-          md5sum eccube-$TAG_NAME.zip | awk '{ print $1 }' > eccube-$TAG_NAME.zip.checksum.md5
-          sha1sum eccube-$TAG_NAME.tar.gz | awk '{ print $1 }' > eccube-$TAG_NAME.tar.gz.checksum.sha1
-          sha1sum eccube-$TAG_NAME.zip | awk '{ print $1 }' > eccube-$TAG_NAME.zip.checksum.sha1
-          sha256sum eccube-$TAG_NAME.tar.gz | awk '{ print $1 }' > eccube-$TAG_NAME.tar.gz.checksum.sha256
-          sha256sum eccube-$TAG_NAME.zip | awk '{ print $1 }' > eccube-$TAG_NAME.zip.checksum.sha256
+          mkdir $OUTPUT_DIR
+          tar czfp $OUTPUT_DIR/eccube-$COMMIT_ID.tar.gz $REPOSITORY_NAME
+          zip -ry $OUTPUT_DIR/eccube-$COMMIT_ID.zip $REPOSITORY_NAME 1> /dev/null
+          md5sum eccube-$COMMIT_ID.tar.gz | awk '{ print $1 }' > $OUTPUT_DIR/eccube-$COMMIT_ID.tar.gz.checksum.md5
+          md5sum eccube-$COMMIT_ID.zip | awk '{ print $1 }' > $OUTPUT_DIR/eccube-$COMMIT_ID.zip.checksum.md5
+          sha1sum eccube-$COMMIT_ID.tar.gz | awk '{ print $1 }' > $OUTPUT_DIR/eccube-$COMMIT_ID.tar.gz.checksum.sha1
+          sha1sum eccube-$COMMIT_ID.zip | awk '{ print $1 }' > $OUTPUT_DIR/eccube-$COMMIT_ID.zip.checksum.sha1
+          sha256sum eccube-$COMMIT_ID.tar.gz | awk '{ print $1 }' > $OUTPUT_DIR/eccube-$COMMIT_ID.tar.gz.checksum.sha256
+          sha256sum eccube-$COMMIT_ID.zip | awk '{ print $1 }' > $OUTPUT_DIR/eccube-$COMMIT_ID.zip.checksum.sha256
           ls -al
 
       - name: Upload packages
         uses: actions/upload-artifact@v2
         with:
           name: eccube-${{ github.event.head_commit.id }}
-          path: ${{ runner.workspace }}/
+          path: ${{ runner.workspace }}/_output/
