@@ -77,6 +77,7 @@ jobs:
     - name: Translate to templates
       if: github.event_name == 'release' && (github.event.action == 'published' || github.event.action == 'prereleased' )
       run: php bin/template_jp.php
+      working-directory: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
 
     - name: Packaging
       if: github.event_name == 'release' && (github.event.action == 'published' || github.event.action == 'prereleased' )
