@@ -120,6 +120,7 @@ jobs:
         sha1sum eccube-$TAG_NAME.zip | awk '{ print $1 }' > eccube-$TAG_NAME.zip.checksum.sha1
         sha256sum eccube-$TAG_NAME.tar.gz | awk '{ print $1 }' > eccube-$TAG_NAME.tar.gz.checksum.sha256
         sha256sum eccube-$TAG_NAME.zip | awk '{ print $1 }' > eccube-$TAG_NAME.zip.checksum.sha256
+        mv $PATH_NAME $REPOSITORY_NAME
         ls -al
 
     - name: Upload binaries to release of TGZ
