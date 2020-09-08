@@ -1,9 +1,10 @@
 name: Weekly test for EC-CUBE
-on: push
-#  schedule:
-#    # 日曜日の 00:00 (JST) に処理を実行する
-#    # UTC の 15:00 は JST だと翌日の 00:00
-#    - cron:  '0 15 * * 6'
+#on: push
+on:
+  schedule:
+    # 日曜日の 00:00 (JST) に処理を実行する
+    # UTC の 15:00 は JST だと翌日の 00:00
+    - cron:  '0 * * * *'
 jobs:
   deploy:
     name: Deploy
