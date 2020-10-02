@@ -425,6 +425,9 @@
             "ref": "8c507e663cf8a8c023d4287974d909bf68f06814"
         }
     },
+    "symfony/http-client-contracts": {
+        "version": "v1.1.10"
+    },
     "symfony/http-foundation": {
         "version": "v3.4.1"
     },
@@ -487,6 +490,9 @@
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.13.0"
+    },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.18.1"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.6.0"
