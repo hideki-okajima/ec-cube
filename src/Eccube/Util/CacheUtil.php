@@ -119,9 +119,6 @@ class CacheUtil implements EventSubscriberInterface
      */
     public function clearDoctrineCache()
     {
-        if (!$this->container->has(self::DOCTRINE_APP_CACHE_KEY)) {
-            return;
-        }
         $console = new Application($this->kernel);
         $console->setAutoExit(false);
 
