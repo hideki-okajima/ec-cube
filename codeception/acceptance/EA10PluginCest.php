@@ -997,6 +997,7 @@ class Boomerang_Store extends Store_Plugin
     public function カート作成()
     {
         $this->I->amOnPage('/boomerang/new');
+        $this->I->wait(1);
         $this->I->seeCurrentUrlMatches('/^\/boomerang$/');
         return $this;
     }
