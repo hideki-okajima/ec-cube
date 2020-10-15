@@ -6,7 +6,6 @@ namespace Customize\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Annotation\EntityExtension;
-use Eccube\Annotation\FormAppend;
 
 /**
  * @EntityExtension("Eccube\Entity\Order")
@@ -16,18 +15,13 @@ trait OrderTrait
     /**
      * @var bool
      * @ORM\Column(type="boolean", nullable=true)
-     * @FormAppend(
-     *     auto_render=true,
-     *     type="Symfony\Component\Form\Extension\Core\Type\ChoiceType",
-     *     options={"choices": {"あり": true, "なし": false}, "label": "熨斗"}
-     * )
      */
     private $noshi = false;
 
     /**
      * @return bool
      */
-    public function isNoshi()
+    public function isNoshi(): bool
     {
         return $this->noshi;
     }
@@ -35,7 +29,7 @@ trait OrderTrait
     /**
      * @param bool $noshi
      */
-    public function setNoshi($noshi)
+    public function setNoshi(bool $noshi): void
     {
         $this->noshi = $noshi;
     }
