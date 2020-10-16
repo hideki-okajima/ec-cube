@@ -43,7 +43,6 @@ jobs:
 
       - name: Setup Plugin
         run: |
-          bin/console doctrine:query:sql "update dtb_base_info set authentication_key='fvX4bYNFRPkJPSBeuw7JoWyG0HXSlsFeSjTQ6Cie'"
           bin/console eccube:composer:require "ec-cube/RelatedProduct4:^4.0"
           echo "1,関連商品プラグイン,RelatedProduct4,0,4.0.1,1761,0,2020-10-16 07:20:38,2020-10-16 07:20:38,plugin" >>src/Eccube/Resource/doctrine/import_csv/ja/dtb_plugin.csv
 
