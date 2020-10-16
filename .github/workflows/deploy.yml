@@ -32,20 +32,6 @@ jobs:
       - name: Translate to templates
         run: php bin/template_jp.php
 
-      - name: Setup EC-CUBE
-        env:
-          DATABASE_URL: sqlite:///var/eccube.db
-          DATABASE_SERVER_VERSION: 3
-        run: |
-          bin/console doctrine:database:create
-          bin/console doctrine:schema:create
-          bin/console eccube:fixtures:load
-
-      - name: Setup Plugin
-        run: |
-          bin/console eccube:composer:require "ec-cube/RelatedProduct4:^4.0"
-          echo "1,関連商品プラグイン,RelatedProduct4,0,4.0.1,1761,0,2020-10-16 07:20:38,2020-10-16 07:20:38,plugin" >>src/Eccube/Resource/doctrine/import_csv/ja/dtb_plugin.csv
-
       - name: Packaging
         working-directory: ../
         env:

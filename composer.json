@@ -33,6 +33,7 @@
         "doctrine/migrations": "^1.8",
         "doctrine/orm": "^2.6",
         "easycorp/easy-log-handler": "^1.0",
+        "ec-cube/RelatedProduct4": "^4.0",
         "ec-cube/plugin-installer": "~0.0.6",
         "egulias/email-validator": "^2.1",
         "friendsofphp/php-cs-fixer": "^2.10",
