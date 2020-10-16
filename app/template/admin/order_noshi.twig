@@ -1,0 +1,14 @@
+<script>
+    $(function () {
+        $('#customize-noshi').appendTo($('#orderOverview > div > div > div:nth-child(1)'));
+    });
+</script>
+<div class="d-none">
+    <div id="customize-noshi" class="row mb-3 form-group">
+        <label class="col-3 col-form-label">熨斗</label>
+        <div class="col">
+            {{ form_widget(form.noshi) }}
+            {{ form_errors(form.noshi) }}
+        </div>
+    </div>
+</div>
