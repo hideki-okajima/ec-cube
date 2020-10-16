@@ -32,10 +32,16 @@ jobs:
       - name: Translate to templates
         run: php bin/template_jp.php
 
-      - name: Install Eccube
-        run: bin/console e:i --no-interaction
+      - name: Setup EC-CUBE
+        env:
+          DATABASE_URL: sqlite:///var/eccube.db
+          DATABASE_SERVER_VERSION: 3
+        run: |
+          bin/console doctrine:database:create
+          bin/console doctrine:schema:create
+          bin/console eccube:fixtures:load
 
-      - name: Install Plugin
+      - name: Setup Plugin
         run: |
           bin/console doctrine:query:sql "update dtb_base_info set authentication_key='fvX4bYNFRPkJPSBeuw7JoWyG0HXSlsFeSjTQ6Cie'"
           bin/console eccube:composer:require "ec-cube/RelatedProduct4:^4.0"
