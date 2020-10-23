@@ -66,6 +66,7 @@ jobs:
           if [[ ! -d ${PWD}/repos ]]; then mkdir -p ${PWD}/repos ; fi
           cp ${PWD}/codeception/_data/plugins/Horizon-1.0.0.tgz ${PWD}/repos/
           docker run -d --rm -v ${PWD}/repos:/repos -e MOCK_REPO_DIR=/repos -p 8080:8080 eccube/mock-package-api
+          sleep 5
 
       - name: Install Plugins
         env:
