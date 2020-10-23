@@ -188,6 +188,18 @@
             "*": "dist"
         },
         "optimize-autoloader": true,
-        "sort-packages": true
+        "sort-packages": true,
+        "secure-http": false
+    },
+    "repositories": {
+        "eccube": {
+            "type": "composer",
+            "url": "http://127.0.0.1:9999",
+            "options": {
+                "http": {
+                    "header": ["X-ECCUBE-KEY: test"]
+                }
+            }
+        }
     }
 }
