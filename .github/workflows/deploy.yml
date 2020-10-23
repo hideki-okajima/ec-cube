@@ -105,6 +105,7 @@ jobs:
           rm -rf $GITHUB_WORKSPACE/codeception.sh
           rm -rf $GITHUB_WORKSPACE/codeception.yml
           rm -rf $GITHUB_WORKSPACE/var/*
+          rm -rf $GITHUB_WORKSPACE/.env
           rm -rf $GITHUB_WORKSPACE/codeception
           rm -rf $GITHUB_WORKSPACE/tests
           rm -rf $GITHUB_WORKSPACE/.github
