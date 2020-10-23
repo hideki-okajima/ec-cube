@@ -225,6 +225,7 @@ class InstallerCommand extends Command
             'doctrine:schema:drop --force',
             'doctrine:schema:create',
             'eccube:fixtures:load',
+            'eccube:plugin:enable --all',
             'cache:clear --no-warmup',
         ];
 
