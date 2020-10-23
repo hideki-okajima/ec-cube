@@ -89,7 +89,7 @@ jobs:
         run: |
           if [[ ! -d ${PWD}/repos ]]; then mkdir -p ${PWD}/repos ; fi
           docker run -d --rm -v ${PWD}/repos:/repos -e MOCK_REPO_DIR=/repos -p 8080:8080 eccube/mock-package-api
-          sleep 5
+          sleep 30
 
       - name: Install Plugins
         env:
