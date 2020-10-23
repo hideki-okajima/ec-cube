@@ -34,7 +34,9 @@ use Eccube\Form\Type\Install\Step1Type;
 use Eccube\Form\Type\Install\Step3Type;
 use Eccube\Form\Type\Install\Step4Type;
 use Eccube\Form\Type\Install\Step5Type;
+use Eccube\Repository\PluginRepository;
 use Eccube\Security\Core\Encoder\PasswordEncoder;
+use Eccube\Service\PluginService;
 use Eccube\Util\CacheUtil;
 use Eccube\Util\StringUtil;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -459,7 +461,6 @@ class InstallController extends AbstractController
      * インストール完了
      *
      * @Route("/install/complete", name="install_complete")
-     * @Template("complete.twig")
      */
     public function complete(Request $request)
     {
@@ -490,6 +491,7 @@ class InstallController extends AbstractController
             'ECCUBE_COOKIE_PATH' => $request->getBasePath() ? $request->getBasePath() : '/',
             'ECCUBE_TEMPLATE_CODE' => 'default',
             'ECCUBE_LOCALE' => 'ja',
+            'ECCUBE_PACKAGE_API_URL' => 'http://127.0.0.1:9999'
         ];
 
         $env = StringUtil::replaceOrAddEnv($env, $replacement);
@@ -497,17 +499,33 @@ class InstallController extends AbstractController
         if ($this->getParameter('kernel.environment') === 'install') {
             file_put_contents(__DIR__.'/../../../../.env', $env);
         }
-        $host = $request->getSchemeAndHttpHost();
-        $basePath = $request->getBasePath();
-        $adminUrl = $host.$basePath.'/'.$replacement['ECCUBE_ADMIN_ROUTE'];
 
         $this->removeSessionData($this->session);
 
         $this->cacheUtil->clearCache('prod');
 
-        return [
-            'admin_url' => $adminUrl,
-        ];
+        return $this->redirectToRoute('install_plugin');
+    }
+
+    /**
+     * インストール完了
+     *
+     * @Route("/install/plugin", name="install_plugin")
+     */
+    public function plugin(Request $request, PluginRepository $pluginRepository, PluginService $pluginService)
+    {
+        $plugins = $pluginRepository->findBy(['enabled' => '0']);
+
+        foreach ($plugins as $plugin) {
+            if (!$plugin->isInitialized()) {
+                $pluginService->installWithCode($plugin->getCode());
+            }
+
+            $pluginService->enable($plugin);
+            $this->cacheUtil->clearCache('prod');
+        }
+
+        return $this->redirectToRoute('admin_login');
     }
 
     protected function getSessionData(SessionInterface $session)
