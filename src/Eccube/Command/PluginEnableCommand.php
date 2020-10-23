@@ -28,7 +28,8 @@ class PluginEnableCommand extends Command
     protected function configure()
     {
         $this
-            ->addOption('code', null, InputOption::VALUE_OPTIONAL, 'plugin code');
+            ->addOption('code', null, InputOption::VALUE_OPTIONAL, 'plugin code')
+            ->addOption('all');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -36,26 +37,34 @@ class PluginEnableCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $code = $input->getOption('code');
+        $isAll = $input->getOption('all');
 
-        if (empty($code)) {
-            $io->error('code is required.');
-
-            return;
-        }
-
-        $plugin = $this->pluginRepository->findByCode($code);
-        if (is_null($plugin)) {
-            $io->error("Plugin `$code` is not found.");
+        if ((empty($code) && empty($isAll)) || (!empty($code) && !empty($isAll))) {
+            $io->error('Either code or all is required.');
 
             return;
         }
 
-        if (!$plugin->isInitialized()) {
-            $this->pluginService->installWithCode($plugin->getCode());
+        if ($isAll) {
+            $plugins = $this->pluginRepository->findBy(['enabled' => '0']);
+        } else {
+            $plugin = $this->pluginRepository->findByCode($code);
+            if (is_null($plugin)) {
+                $io->error("Plugin `$code` is not found.");
+
+                return;
+            }
+            $plugins = [$plugin];
         }
 
-        $this->pluginService->enable($plugin);
-        $this->clearCache($io);
+        foreach ($plugins as $plugin) {
+            if (!$plugin->isInitialized()) {
+                $this->pluginService->installWithCode($plugin->getCode());
+            }
+
+            $this->pluginService->enable($plugin);
+            $this->clearCache($io);
+        }
 
         $io->success('Plugin Enabled.');
     }
