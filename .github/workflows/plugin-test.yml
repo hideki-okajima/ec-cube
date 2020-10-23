@@ -82,6 +82,26 @@ jobs:
           sudo apt-fast install -y postgresql-client
           psql eccube_db -h 127.0.0.1 -U postgres -c "update dtb_base_info set authentication_key='test';"
 
+      - name: setup-chromedriver
+        uses: nanasess/setup-chromedriver@master
+
+      - name: Run chromedriver
+        run: |
+          export DISPLAY=:99
+          chromedriver --url-base=/wd/hub &
+          echo ">>> Started chrome-driver"
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          echo ">>> Started xvfb"
+
+      - name: Start PHP Development Server
+        env:
+          APP_ENV: 'codeception'
+          DATABASE_URL: ${{ matrix.database_url }}
+          DATABASE_SERVER_VERSION: ${{ matrix.database_server_version }}
+          MAILER_URL: 'smtp://localhost:1025'
+          ECCUBE_PACKAGE_API_URL: 'http://localhost:8080'
+        run: php -S localhost:8000 &
+
       ## ${PWD}/repos does not exist so service cannot be started
       - name: Run package-api
         run: |
