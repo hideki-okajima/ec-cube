@@ -27,7 +27,10 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Install to Composer
-        run: composer install --no-scripts --no-dev --no-interaction --optimize-autoloader
+        run: |
+          composer self-update --stable
+          composer -V
+          composer install --no-scripts --no-dev --no-interaction --optimize-autoloader
 
       - name: Translate to templates
         run: php bin/template_jp.php
