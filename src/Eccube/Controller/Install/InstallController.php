@@ -507,7 +507,7 @@ class InstallController extends AbstractController
     }
 
     /**
-     * インストール完了
+     * プラグインの有効化
      *
      * @Route("/install/plugin", name="install_plugin")
      */
