@@ -881,7 +881,7 @@ class InstallController extends AbstractController
                 'email02' => $data['email'],
                 'email03' => $data['email'],
                 'email04' => $data['email'],
-                'authentication_key' => 'Xf7Fx46aqDPIy5mKBVJCFQegui8tO1agPGGYHkgW',
+                'authentication_key' => 'Xf7Fx46aqDPIy5mKBVJCFQegui8tO1agPGGYHkgW', // TODO: 認証キー不要に
                 'update_date' => new \DateTime(),
                 'discriminator_type' => 'baseinfo',
             ], [

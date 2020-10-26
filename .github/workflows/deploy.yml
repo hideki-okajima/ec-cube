@@ -53,6 +53,7 @@ jobs:
           bin/console doctrine:schema:create --env=dev
           bin/console eccube:fixtures:load --env=dev
 
+      # TODO: 認証キー不要に
       - name: Update baseinfo with pgsql
         env:
           PGPASSWORD: 'password'
