@@ -58,28 +58,20 @@ jobs:
           PGPASSWORD: 'password'
         run: |
           sudo apt-fast install -y postgresql-client
-          psql eccube_db -h 127.0.0.1 -U postgres -c "update dtb_base_info set authentication_key='test';"
-
-      ## ${PWD}/repos does not exist so service cannot be started
-      - name: Run package-api
-        run: |
-          if [[ ! -d ${PWD}/repos ]]; then mkdir -p ${PWD}/repos ; fi
-          cp ${PWD}/codeception/_data/plugins/Horizon-1.0.0.tgz ${PWD}/repos/
-          docker run -d --rm -v ${PWD}/repos:/repos -e MOCK_REPO_DIR=/repos -p 8080:8080 eccube/mock-package-api
-          sleep 5
+          psql eccube_db -h 127.0.0.1 -U postgres -c "update dtb_base_info set authentication_key='Xf7Fx46aqDPIy5mKBVJCFQegui8tO1agPGGYHkgW';"
 
       - name: Install Plugins
         env:
           APP_ENV: 'prod'
           DATABASE_URL: postgres://postgres:password@127.0.0.1:5432/eccube_db
           DATABASE_SERVER_VERSION: 11
-          ECCUBE_PACKAGE_API_URL: 'http://localhost:8080'
         run: |
-          ls ${PWD}/repos
-          bin/console eccube:composer:require "ec-cube/Horizon:^1.0"
+          bin/console eccube:composer:require "ec-cube/Api:^1.0"
 
       - name: Pre Install Plugins
-        run: echo "1,ホライゾン,Horizon,false,1.0.0,100,false,2020-10-23 05:53:36,2020-10-23 05:53:36,plugin" >> src/Eccube/Resource/doctrine/import_csv/ja/dtb_plugin.csv
+        env:
+          PGPASSWORD: 'password'
+        run: psql eccube_db -h 127.0.0.1 -U postgres -c "select * from dtb_plugin;" -A -F, --pset footer > src/Eccube/Resource/doctrine/import_csv/ja/dtb_plugin.csv
 
       - name: Packaging
         working-directory: ../
