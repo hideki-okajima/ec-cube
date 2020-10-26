@@ -491,7 +491,6 @@ class InstallController extends AbstractController
             'ECCUBE_COOKIE_PATH' => $request->getBasePath() ? $request->getBasePath() : '/',
             'ECCUBE_TEMPLATE_CODE' => 'default',
             'ECCUBE_LOCALE' => 'ja',
-            'ECCUBE_PACKAGE_API_URL' => 'http://127.0.0.1:9999'
         ];
 
         $env = StringUtil::replaceOrAddEnv($env, $replacement);
@@ -882,6 +881,7 @@ class InstallController extends AbstractController
                 'email02' => $data['email'],
                 'email03' => $data['email'],
                 'email04' => $data['email'],
+                'authentication_key' => 'Xf7Fx46aqDPIy5mKBVJCFQegui8tO1agPGGYHkgW',
                 'update_date' => new \DateTime(),
                 'discriminator_type' => 'baseinfo',
             ], [
