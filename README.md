@@ -1,3 +1,5 @@
+Draft Test
+
 # EC-CUBE 4.0
 
 [![Build Status](https://travis-ci.com/EC-CUBE/ec-cube.svg?branch=4.0)](https://travis-ci.com/EC-CUBE/ec-cube)
