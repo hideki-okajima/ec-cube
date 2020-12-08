@@ -46,18 +46,16 @@ file that was distributed with this source code.
         $.ajax({
             type: "POST",
             url: "{{ url('install_plugin_enable') }}",
-            async: false
         }).done(function () {
             $('#plugin-enable').hide();
             $('#cache-clear').show();
-        });
-        $.ajax({
-            type: "POST",
-            url: "{{ url('install_cache_clear') }}",
-            async: false
-        }).done(function () {
-            $('#cache-clear').hide();
-            $('#completed').show();
+            $.ajax({
+                type: "POST",
+                url: "{{ url('install_cache_clear') }}",
+            }).done(function () {
+                $('#cache-clear').hide();
+                $('#completed').show();
+            });
         });
     });
 </script>
