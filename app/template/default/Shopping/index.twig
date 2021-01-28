@@ -365,10 +365,10 @@ file that was distributed with this source code.
                 {# ここから追加 #}
                 <div class="ec-orderPayment">
                     <div class="ec-rectHeading">
-                        <h2>熨斗</h2>
+                        <h2>熨斗（手数料500円）</h2>
                     </div>
                     <div class="ec-input">
-                        {{ form_widget(form.noshi) }}
+                        {{ form_widget(form.noshi, { 'attr': { 'data-trigger': 'change' }}) }}
                         {{ form_errors(form.noshi) }}
                     </div>
                 </div>
