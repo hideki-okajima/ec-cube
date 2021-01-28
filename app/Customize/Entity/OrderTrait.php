@@ -21,7 +21,7 @@ trait OrderTrait
     /**
      * @return bool
      */
-    public function isNoshi(): bool
+    public function isNoshi(): ?bool
     {
         return $this->noshi;
     }
