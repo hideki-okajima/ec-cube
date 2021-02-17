@@ -54,17 +54,18 @@ file that was distributed with this source code.
 
     <script type="text/javascript">
         $(function() {
-            if ($('[type="date"]').prop('type') != 'date') {
-                $('input[id$=_issue_date]').datetimepicker({
-                    locale: '{{ eccube_config.locale }}',
-                    format: 'YYYY-MM-DD',
-                    useCurrent: true,
-                    buttons: {
-                        showToday: true,
-                        showClose: true
-                    }
-                });
-            }
+            // datetimepicker と競合するため HTML5 のカレンダ入力を無効に
+            $('input[type="date"]').attr('type','text');
+
+            $('#order_pdf_issue_date').datetimepicker({
+                locale: '{{ eccube_config.locale }}',
+                format: 'YYYY-MM-DD',
+                useCurrent: true,
+                buttons: {
+                    showToday: true,
+                    showClose: true
+                }
+            });
 
             var close = $('#windowclose');
 
