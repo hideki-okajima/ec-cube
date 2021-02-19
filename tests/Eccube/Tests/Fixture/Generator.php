@@ -390,7 +390,7 @@ class Generator
                     __DIR__.'/../../../../html/upload/save_image',
                     $faker->numberBetween(480, 640),
                     $faker->numberBetween(480, 640),
-                    'png', false, true, '#cccccc', '#ffffff'
+                    'png', false, null, sprintf('#%02x%02x%02x', random_int(0x00, 0xFF), random_int(0x00, 0xFF), random_int(0x00, 0xFF))
                 );
             } else {
                 $image = $faker->word.'.jpg';
