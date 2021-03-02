@@ -19,6 +19,7 @@ use Eccube\Controller\AbstractController;
 use Eccube\Entity\Delivery;
 use Eccube\Entity\DeliveryFee;
 use Eccube\Entity\DeliveryTime;
+use Eccube\Entity\Payment;
 use Eccube\Entity\PaymentOption;
 use Eccube\Event\EccubeEvents;
 use Eccube\Event\EventArgs;
@@ -71,11 +72,6 @@ class DeliveryController extends AbstractController
 
     /**
      * DeliveryController constructor.
-     *
-     * @param PaymentOptionRepository $paymentOptionRepository
-     * @param DeliveryFeeRepository $deliveryFeeRepository
-     * @param PrefRepository $prefRepository
-     * @param DeliveryRepository $deliveryRepository
      */
     public function __construct(PaymentOptionRepository $paymentOptionRepository, DeliveryFeeRepository $deliveryFeeRepository, PrefRepository $prefRepository, DeliveryRepository $deliveryRepository, DeliveryTimeRepository $deliveryTimeRepository, SaleTypeRepository $saleTypeRepository)
     {
@@ -241,6 +237,12 @@ class DeliveryController extends AbstractController
                     $this->entityManager->persist($DeliveryData);
                 }
 
+                $mergeRules = $this->getMergeRules($PaymentsData);
+                // 対応していない金額があれば警告を表示
+                if ($mergeRules[0]['min'] != 0 || $mergeRules[0]['max'] != PHP_INT_MAX) {
+                    $this->addWarning(var_export($mergeRules, true), 'admin');
+                }
+
                 $this->entityManager->persist($DeliveryData);
 
                 $this->entityManager->flush();
@@ -363,5 +365,46 @@ class DeliveryController extends AbstractController
         }
 
         return $this->json('OK', 200);
+    }
+
+    private function getMergeRules($PaymentsData)
+    {
+        // 手数料抜きの合計金額の一覧を作成
+        $rules = array_map(function (Payment $Payment) {
+            return [
+                'min' => $Payment->getRuleMin() ? $Payment->getRuleMin() - $Payment->getCharge() : 0,
+                'max' => $Payment->getRuleMax() ? $Payment->getRuleMax() - $Payment->getCharge() : PHP_INT_MAX,
+            ];
+        }, $PaymentsData);
+
+        $mergeRules = [];
+
+        foreach ($rules as $rule) {
+            // かぶる条件があれば抽出
+            $targetRules = array_filter($mergeRules, function ($mergeRule) use ($rule) {
+                return $rule['min'] <= $mergeRule['max'] && $mergeRule['min'] <= $rule['max'];
+            });
+
+            if (count($targetRules) === 0) {
+                $mergeRules[] = $rule;
+            } else {
+                // 被らない条件を抽出
+                $mergeRules = array_filter($mergeRules, function ($mergeRule) use ($rule) {
+                    return $rule['min'] > $mergeRule['max'] || $mergeRule['min'] > $rule['max'];
+                });
+
+                $targetRules[] = $rule;
+                $min = min(array_map(function ($rule) {
+                    return $rule['min'];
+                }, $targetRules));
+
+                $max = max(array_map(function ($rule) {
+                    return $rule['max'];
+                }, $targetRules));
+
+                $mergeRules[] = ['min' => $min, 'max' => $max];
+            }
+        }
+        return $mergeRules;
     }
 }
