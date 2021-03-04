@@ -307,7 +307,7 @@ class ProductController extends AbstractController
             'subtitle' => $Product->getName(),
             'form' => $builder->getForm()->createView(),
             'Product' => $Product,
-            'is_favorite' => $is_favorite,
+            'is_favorite_test' => $is_favorite,
         ];
     }
 
