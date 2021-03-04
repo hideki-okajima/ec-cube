@@ -360,7 +360,7 @@ file that was distributed with this source code.
                     {% if BaseInfo.option_favorite_product %}
                         <form action="{{ url('product_add_favorite', {id:Product.id}) }}" method="post">
                             <div class="ec-productRole__btn">
-                                {% if is_favorite == false %}
+                                {% if is_favorite_test == false %}
                                     <button type="submit" id="favorite" class="ec-blockBtn--cancel">
                                         {{ 'front.product.add_favorite'|trans }}
                                     </button>
