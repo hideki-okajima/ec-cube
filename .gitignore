@@ -12,6 +12,7 @@ composer.phar
 /app/Plugin/*
 !/app/Plugin/.gitkeep
 !/app/Plugin/ExamplePlugin
+!/app/Plugin/KansaiUg
 /app/PluginData/*
 !/app/PluginData/.gitkeep
 /app/template/*

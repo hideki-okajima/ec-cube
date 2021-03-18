@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Customize\Service\PurchaseFlow\Processor;
+namespace Plugin\KansaiUg\Service\PurchaseFlow\Processor;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
@@ -31,7 +31,7 @@ use Eccube\Service\PurchaseFlow\PurchaseContext;
 
 /**
  * Class NoshiProcessor
- * @package Customize\Service\PurchaseFlow\Processor
+ * @package Plugin\KansaiUg\Service\PurchaseFlow\Processor
  *
  * @ShoppingFlow
  */
@@ -90,7 +90,7 @@ class NoshiProcessor implements ItemHolderPreprocessor
         }
 
         // 熨斗が有効な場合に熨斗手数料の明細を追加
-        if ($itemHolder->isNoshi()) {
+        if ($itemHolder->isKansaiUgNoshi()) {
             $this->addNoshiItem($itemHolder);
         }
     }

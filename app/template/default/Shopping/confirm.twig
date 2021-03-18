@@ -147,16 +147,7 @@ file that was distributed with this source code.
                 </div>
             </div>
 
-            {# ここから追加 #}
-            <div class="ec-orderPayment">
-                <div class="ec-rectHeading">
-                    <h2>熨斗（手数料500円）</h2>
-                </div>
-                <div class="ec-input">
-                    <p>{% if Order.isNoshi %}あり{% else %}なし{% endif %}</p>
-                </div>
-            </div>
-            {# ここまで追加 #}
+            {{ include('@KansaiUg/shopping_confirm_noshi.twig', ignore_missing=true) }}
 
             {% if BaseInfo.isOptionPoint and Order.Customer is not null %}
             <div class="ec-orderPayment">

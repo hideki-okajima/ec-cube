@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Customize\EventListener;
+namespace Plugin\KansaiUg\EventListener;
 
 
 use Eccube\Event\TemplateEvent;
@@ -19,6 +19,6 @@ class NoshiEvent implements EventSubscriberInterface
 
     public function onAdminOrderEditTwig(TemplateEvent $event)
     {
-        $event->addSnippet('@admin/order_edit.twig');
+        $event->addSnippet('@KansaiUg/admin/order_edit.twig');
     }
 }

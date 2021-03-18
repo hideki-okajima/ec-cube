@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Customize\Entity;
+namespace Plugin\KansaiUg\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
@@ -16,21 +16,21 @@ trait OrderTrait
      * @var bool
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $noshi = false;
+    private $kansai_ug_noshi = false;
 
     /**
      * @return bool
      */
-    public function isNoshi(): ?bool
+    public function isKansaiUgNoshi(): ?bool
     {
-        return $this->noshi;
+        return $this->kansai_ug_noshi;
     }
 
     /**
-     * @param bool $noshi
+     * @param bool $kansai_ug_noshi
      */
-    public function setNoshi(bool $noshi): void
+    public function setKansaiUgNoshi(bool $kansai_ug_noshi): void
     {
-        $this->noshi = $noshi;
+        $this->kansai_ug_noshi = $kansai_ug_noshi;
     }
 }

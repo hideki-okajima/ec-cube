@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Customize\Form\Extension;
+namespace Plugin\KansaiUg\Form\Extension;
 
 use Eccube\Form\Type\Admin\OrderType;
 use Symfony\Component\Form\AbstractTypeExtension;
@@ -27,7 +27,7 @@ class AdminNoshiExtension extends AbstractTypeExtension
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
 
-            $form->add('noshi', ChoiceType::class, [
+            $form->add('kansai_ug_noshi', ChoiceType::class, [
                 'choices' => [
                     'あり' => true,
                     'なし' => false,

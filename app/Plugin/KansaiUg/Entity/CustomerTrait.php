@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Customize\Entity;
+namespace Plugin\KansaiUg\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
@@ -24,21 +24,21 @@ trait CustomerTrait
      *     options={"required": true, "label": "趣味"}
      * )
      */
-    private $hobby;
+    private $kansai_ug_hobby;
 
     /**
      * @return string|null
      */
-    public function getHobby(): ?string
+    public function getKansaiUgHobby(): ?string
     {
-        return $this->hobby;
+        return $this->kansai_ug_hobby;
     }
 
     /**
-     * @param string|null $hobby
+     * @param string|null $kansai_ug_hobby
      */
-    public function setHobby(?string $hobby): void
+    public function setKansaiUgHobby(?string $kansai_ug_hobby): void
     {
-        $this->hobby = $hobby;
+        $this->kansai_ug_hobby = $kansai_ug_hobby;
     }
 }
