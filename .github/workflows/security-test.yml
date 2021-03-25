@@ -1,4 +1,4 @@
-name: Backward compatibility testing to Front template
+name: Security Deny/Allow list test for EC-CUBE
 on:
   push:
     branches:
@@ -13,23 +13,22 @@ on:
       - '**'
       - '!*.md'
 jobs:
-  codeception:
-    name: Codeception
+  security-list:
+    name: Security Deny/Allow list
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false
       matrix:
-        version: [ 4.0.0, 4.0.1, 4.0.2, 4.0.3, 4.0.4, 4.0.5 ]
         operating-system: [ ubuntu-18.04 ]
         php: [ 7.3 ]
         db: [ pgsql ]
-        group: [ front ]
+        method:
+          - systeminfo_セキュリティ管理IP制限_許可リスト
+          - systeminfo_セキュリティ管理IP制限_拒否リスト
         include:
           - db: pgsql
             database_url: postgres://postgres:password@127.0.0.1:5432/eccube_db
             database_server_version: 11
-          - group: front
-            app_env: 'codeception'
 
     services:
       postgres:
@@ -41,7 +40,6 @@ jobs:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
       mailcatcher:
         image: schickling/mailcatcher
         ports:
@@ -51,15 +49,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-
-      - name: Checkout to front templates
-        env:
-          ECCUBE_VERSION: ${{ matrix.version }}
-        run: |
-          git remote add upstream https://github.com/EC-CUBE/ec-cube.git
-          git fetch upstream --tags
-          git checkout refs/tags/${ECCUBE_VERSION} src/Eccube/Resource/template/default
-          git checkout refs/tags/${ECCUBE_VERSION} html/template/default
 
       - name: Get Composer Cache Directory
         id: composer-cache
@@ -81,9 +70,10 @@ jobs:
         run: |
           sudo composer selfupdate --1
           composer install --dev --no-interaction -o --apcu-autoloader
+
       - name: Setup to EC-CUBE
         env:
-          APP_ENV: ${{ matrix.app_env }}
+          APP_ENV: 'codeception'
           DATABASE_URL: ${{ matrix.database_url }}
           DATABASE_SERVER_VERSION: ${{ matrix.database_server_version }}
         run: |
@@ -91,6 +81,13 @@ jobs:
           bin/console doctrine:database:create --env=dev
           bin/console doctrine:schema:create --env=dev
           bin/console eccube:fixtures:load --env=dev
+
+      - name: Update baseinfo with pgsql
+        env:
+          PGPASSWORD: 'password'
+        run: |
+          sudo apt-fast install -y postgresql-client
+          psql eccube_db -h 127.0.0.1 -U postgres -c "update dtb_base_info set authentication_key='test';"
 
       - name: setup-chromedriver
         uses: nanasess/setup-chromedriver@master
@@ -118,19 +115,20 @@ jobs:
           DATABASE_URL: ${{ matrix.database_url }}
           DATABASE_SERVER_VERSION: ${{ matrix.database_server_version }}
           MAILER_URL: 'smtp://localhost:1025'
+          METHOD: ${{ matrix.method }}
           ECCUBE_PACKAGE_API_URL: 'http://localhost:8080'
-          GROUP: ${{ matrix.group }}
-          SYMFONY_DEPRECATIONS_HELPER: weak
-        run: vendor/bin/codecept -vvv run acceptance --env chrome,github_action -g ${GROUP}
+          NO_FIXTURES: 1
+        run: vendor/bin/codecept -vvv run acceptance --env chrome,github_action EA11SecurityCest:${METHOD}
       - name: Upload evidence
         if: failure()
         uses: actions/upload-artifact@v2
         with:
-          name: codeception-${{ matrix.group }}-evidence
+          name: security-list-${{ matrix.method }}-evidence
           path: codeception/_output/
       - name: Upload logs
         if: failure()
         uses: actions/upload-artifact@v2
         with:
-          name: codeception-${{ matrix.group }}-logs
+          name: security-list-${{ matrix.method }}-logs
           path: var/log/
+
