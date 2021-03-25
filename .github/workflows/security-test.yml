@@ -23,8 +23,8 @@ jobs:
         php: [ 7.3 ]
         db: [ pgsql ]
         method:
-          - systeminfo_セキュリティ管理IP制限_許可リスト
-          - systeminfo_セキュリティ管理IP制限_拒否リスト
+          - systeminfo_security_allow_list
+          - systeminfo_security_deny_list
         include:
           - db: pgsql
             database_url: postgres://postgres:password@127.0.0.1:5432/eccube_db

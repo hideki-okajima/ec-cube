@@ -31,7 +31,7 @@ class EA11SecurityCest
     /**
      * ATTENTION 後続のテストが失敗する
      */
-    public function systeminfo_セキュリティ管理IP制限_許可リスト(\AcceptanceTester $I)
+    public function systeminfo_security_allow_list(\AcceptanceTester $I)
     {
         $I->wantTo('EA0804-UC01-T03 セキュリティ管理 - IP制限（許可リスト）');
 
@@ -56,7 +56,7 @@ class EA11SecurityCest
     /**
      * ATTENTION 後続のテストが失敗する
      */
-    public function systeminfo_セキュリティ管理IP制限_拒否リスト(\AcceptanceTester $I)
+    public function systeminfo_security_deny_list(\AcceptanceTester $I)
     {
         $I->wantTo('EA0804-UC01-T05 セキュリティ管理 - IP制限（拒否リスト）');
 
