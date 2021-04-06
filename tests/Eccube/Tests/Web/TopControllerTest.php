@@ -13,9 +13,9 @@
 
 namespace Eccube\Tests\Web;
 
+use Eccube\Entity\Page;
 use Eccube\Repository\BaseInfoRepository;
 use Eccube\Repository\PageRepository;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class TopControllerTest extends AbstractWebTestCase
 {
@@ -39,7 +39,9 @@ class TopControllerTest extends AbstractWebTestCase
     {
         // description を設定
         $description = 'あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。';
-        $page = $this->container->get(PageRepository::class)->getByUrl('homepage');
+        /** @var PageRepository $pageRepository */
+        $pageRepository = $this->entityManager->getRepository(Page::class);
+        $page = $pageRepository->getByUrl('homepage');
         $page->setDescription($description);
         $this->entityManager->flush();
 
