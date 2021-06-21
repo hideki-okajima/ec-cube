@@ -1,5 +1,6 @@
 <?php
 
+
 use Eccube\Kernel;
 use Symfony\Component\Debug\Debug;
 use Dotenv\Dotenv;
