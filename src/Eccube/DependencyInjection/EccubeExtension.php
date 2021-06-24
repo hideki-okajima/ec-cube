@@ -77,57 +77,7 @@ class EccubeExtension extends Extension implements PrependExtensionInterface
 
     protected function configurePlugins(ContainerBuilder $container)
     {
-        $pluginDir = $container->getParameter('kernel.project_dir').'/app/Plugin';
-        $pluginDirs = $this->getPluginDirectories($pluginDir);
-
-        $container->setParameter('eccube.plugins.enabled', []);
-        // ファイル設置のみの場合は, 無効なプラグインとみなす.
-        // DB接続後, 有効無効の判定を行う.
-        $container->setParameter('eccube.plugins.disabled', $pluginDirs);
-
-        // doctrine.yml, または他のprependで差し込まれたdoctrineの設定値を取得する.
-        $configs = $container->getExtensionConfig('doctrine');
-
-        // $configsは, env変数(%env(xxx)%)やパラメータ変数(%xxx.xxx%)がまだ解決されていないため, resolveEnvPlaceholders()で解決する
-        // @see https://github.com/symfony/symfony/issues/22456
-        $configs = $container->resolveEnvPlaceholders($configs, true);
-
-        // doctrine bundleのconfigurationで設定値を正規化する.
-        $configuration = new DoctrineBundleConfiguration($container->getParameter('kernel.debug'));
-        $config = $this->processConfiguration($configuration, $configs);
-
-        // prependのタイミングではコンテナのインスタンスは利用できない.
-        // 直接dbalのconnectionを生成し, dbアクセスを行う.
-        $params = $config['dbal']['connections'][$config['dbal']['default_connection']];
-        // ContainerInterface::resolveEnvPlaceholders() で取得した DATABASE_URL は
-        // % がエスケープされているため、環境変数から取得し直す
-        $params['url'] = env('DATABASE_URL');
-        $conn = DriverManager::getConnection($params);
-
-        if (!$this->isConnected($conn)) {
-            return;
-        }
-
-        $stmt = $conn->query('select * from dtb_plugin');
-        $plugins = $stmt->fetchAll();
-
-        $enabled = [];
-        foreach ($plugins as $plugin) {
-            if (array_key_exists('enabled', $plugin) && $plugin['enabled']) {
-                $enabled[] = $plugin['code'];
-            }
-        }
-
-        $disabled = [];
-        foreach ($pluginDirs as $dir) {
-            if (!in_array($dir, $enabled)) {
-                $disabled[] = $dir;
-            }
-        }
-
-        // 他で使いまわすため, パラメータで保持しておく.
-        $container->setParameter('eccube.plugins.enabled', $enabled);
-        $container->setParameter('eccube.plugins.disabled', $disabled);
+        $enabled = $container->getParameter('eccube.plugins.enabled');
 
         $pluginDir = $container->getParameter('kernel.project_dir').'/app/Plugin';
         $this->configureTwigPaths($container, $enabled, $pluginDir);
@@ -183,39 +133,5 @@ class EccubeExtension extends Extension implements PrependExtensionInterface
                 ],
             ]);
         }
-    }
-
-    protected function isConnected(Connection $conn)
-    {
-        try {
-            if (!$conn->ping()) {
-                return false;
-            }
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        $tableNames = $conn->getSchemaManager()->listTableNames();
-
-        return in_array('dtb_plugin', $tableNames);
-    }
-
-    /**
-     * @param string $pluginDir
-     */
-    protected function getPluginDirectories($pluginDir)
-    {
-        $finder = (new Finder())
-            ->in($pluginDir)
-            ->sortByName()
-            ->depth(0)
-            ->directories();
-
-        $dirs = [];
-        foreach ($finder as $dir) {
-            $dirs[] = $dir->getBaseName();
-        }
-
-        return $dirs;
     }
 }

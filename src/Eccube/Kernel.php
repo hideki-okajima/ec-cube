@@ -14,6 +14,9 @@
 namespace Eccube;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
+use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Configuration as DoctrineBundleConfiguration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use Eccube\Common\EccubeNav;
 use Eccube\Common\EccubeTwigBlock;
 use Eccube\DependencyInjection\Compiler\AutoConfigurationTagPass;
@@ -43,6 +46,7 @@ use Eccube\Service\PurchaseFlow\ItemValidator;
 use Eccube\Service\PurchaseFlow\PurchaseProcessor;
 use Eccube\Validator\EmailValidator\NoRFCEmailValidator;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -78,14 +82,7 @@ class Kernel extends BaseKernel
         }
 
         $pluginDir = $this->getProjectDir().'/app/Plugin';
-        $finder = (new Finder())
-            ->in($pluginDir)
-            ->sortByName()
-            ->depth(0)
-            ->directories();
-        $plugins = array_map(function ($dir) {
-            return $dir->getBaseName();
-        }, iterator_to_array($finder));
+        $plugins = $this->getPlugins($pluginDir);
 
         foreach ($plugins as $code) {
             $pluginBundles = $pluginDir.'/'.$code.'/Resource/config/bundles.php';
@@ -93,7 +90,9 @@ class Kernel extends BaseKernel
                 $contents = require $pluginBundles;
                 foreach ($contents as $class => $envs) {
                     if (isset($envs['all']) || isset($envs[$this->environment])) {
-                        yield new $class();
+                        if (class_exists($class)) {
+                            yield new $class();
+                        }
                     }
                 }
             }
@@ -155,10 +154,65 @@ class Kernel extends BaseKernel
         }
         $loader->load($confDir.'/services_'.$this->environment.self::CONFIG_EXTS, 'glob');
 
-        // プラグインのservices.phpをロードする.
-        $dir = dirname(__DIR__).'/../app/Plugin/*/Resource/config';
-        $loader->load($dir.'/services'.self::CONFIG_EXTS, 'glob');
-        $loader->load($dir.'/services_'.$this->environment.self::CONFIG_EXTS, 'glob');
+        $pluginDir = $this->getProjectDir().'/app/Plugin';
+        $pluginDirs = $this->getPlugins($pluginDir);
+
+        $container->setParameter('eccube.plugins.enabled', []);
+        // ファイル設置のみの場合は, 無効なプラグインとみなす.
+        // DB接続後, 有効無効の判定を行う.
+        $container->setParameter('eccube.plugins.disabled', $pluginDirs);
+
+        // doctrine.yml, または他のprependで差し込まれたdoctrineの設定値を取得する.
+        $configs = $container->getExtensionConfig('doctrine');
+
+        // $configsは, env変数(%env(xxx)%)やパラメータ変数(%xxx.xxx%)がまだ解決されていないため, resolveEnvPlaceholders()で解決する
+        // @see https://github.com/symfony/symfony/issues/22456
+        $configs = $container->resolveEnvPlaceholders($configs, true);
+
+        // doctrine bundleのconfigurationで設定値を正規化する.
+        $configuration = new DoctrineBundleConfiguration($container->getParameter('kernel.debug'));
+        $processor = new Processor();
+
+        $config = $processor->processConfiguration($configuration, $configs);
+
+        // prependのタイミングではコンテナのインスタンスは利用できない.
+        // 直接dbalのconnectionを生成し, dbアクセスを行う.
+        $params = $config['dbal']['connections'][$config['dbal']['default_connection']];
+        // ContainerInterface::resolveEnvPlaceholders() で取得した DATABASE_URL は
+        // % がエスケープされているため、環境変数から取得し直す
+        $params['url'] = env('DATABASE_URL');
+        $conn = DriverManager::getConnection($params);
+
+        if (!$this->isConnected($conn)) {
+            return;
+        }
+
+        $stmt = $conn->query('select * from dtb_plugin');
+        $plugins = $stmt->fetchAll();
+
+        $enabled = [];
+        foreach ($plugins as $plugin) {
+            if (array_key_exists('enabled', $plugin) && $plugin['enabled']) {
+                $enabled[] = $plugin['code'];
+            }
+        }
+
+        $disabled = [];
+        foreach ($pluginDirs as $dir) {
+            if (!in_array($dir, $enabled)) {
+                $disabled[] = $dir;
+            }
+        }
+
+        // 他で使いまわすため, パラメータで保持しておく.
+        $container->setParameter('eccube.plugins.enabled', $enabled);
+        $container->setParameter('eccube.plugins.disabled', $disabled);
+
+        foreach ($enabled as $plugin) {
+            $dir = dirname(__DIR__).'/../app/Plugin/'.$plugin.'/Resource/config';
+            $loader->load($dir.'/services'.self::CONFIG_EXTS, 'glob');
+            $loader->load($dir.'/services_'.$this->environment.self::CONFIG_EXTS, 'glob');
+        }
 
         // カスタマイズディレクトリのservices.phpをロードする.
         $dir = dirname(__DIR__).'/../app/Customize/Resource/config';
@@ -285,14 +339,7 @@ class Kernel extends BaseKernel
 
         // Plugin
         $pluginDir = $projectDir.'/app/Plugin';
-        $finder = (new Finder())
-            ->in($pluginDir)
-            ->sortByName()
-            ->depth(0)
-            ->directories();
-        $plugins = array_map(function ($dir) {
-            return $dir->getBaseName();
-        }, iterator_to_array($finder));
+        $plugins = $this->getPlugins($pluginDir);
 
         foreach ($plugins as $code) {
             if (file_exists($pluginDir.'/'.$code.'/Entity')) {
@@ -321,5 +368,38 @@ class Kernel extends BaseKernel
         foreach ($files as $file) {
             require_once $file->getRealPath();
         }
+    }
+
+    private function isConnected(Connection $conn)
+    {
+        try {
+            if (!$conn->ping()) {
+                return false;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        $tableNames = $conn->getSchemaManager()->listTableNames();
+
+        return in_array('dtb_plugin', $tableNames);
+    }
+
+    /**
+     * @param string $pluginDir
+     *
+     * @return array
+     */
+    private function getPlugins(string $pluginDir): array
+    {
+        $finder = (new Finder())
+            ->in($pluginDir)
+            ->sortByName()
+            ->depth(0)
+            ->directories();
+
+        return array_map(function ($dir) {
+            return $dir->getBaseName();
+        }, iterator_to_array($finder));
     }
 }
